@@ -4,7 +4,10 @@
     android:id="@+id/nav_graph">
 
     <activity android:id="@+id/loginActivity"
-        android:name="com.example.mobile_fsd_jetpack.LoginActivity"/>
+        android:name="com.example.mobile_fsd_jetpack.LoginActivity">
+        <action android:id="@+id/actionToMainActivity"
+            app:destination="@id/mainActivity"/>
+    </activity>
 
 
     <activity android:id="@+id/mainActivity"

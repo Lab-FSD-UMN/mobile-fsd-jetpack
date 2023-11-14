@@ -3,13 +3,14 @@ package com.example.mobile_fsd_jetpack.auth
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.mobile_fsd_jetpack.api.utils.LoginCallback
 
 abstract class Auth (private val context : Context){
 
     abstract val SCOPE : String?;
     abstract val LOGIN_REDIRECT : Class<*>;
     abstract val IS_AUTH_REDIRECT : Class<*>;
-    abstract fun login(email : String, password : String): Boolean;
+    abstract fun login(email : String, password : String, callback : LoginCallback);
     abstract fun deleteProfile();
 
     private val TAG = "token";
@@ -37,7 +38,7 @@ abstract class Auth (private val context : Context){
     }
 
     fun authenticated() : Boolean {
-        return false
+//        return false
         return this.getToken() != null;
     }
 
