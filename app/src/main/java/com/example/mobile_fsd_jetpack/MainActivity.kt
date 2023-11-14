@@ -25,19 +25,19 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            if (!UserAuth(this).authenticated()){
-                navController.navigate("loginActivity")
-            }
+            val context = LocalContext.current;
             MobilefsdjetpackTheme {
                 NavHost(navController = navController, startDestination = "mainActivity") {
                     composable("mainActivity") {
+
+                        if (!UserAuth(context).authenticated()){
+                            navController.navigate("loginActivity")
+                        }
                         Greeting("MAIN ACTIVITY")
                     }
-                    composable("loginActivity"){
-                        val context = LocalContext.current
+                    composable("loginActivity") {
                         val intent = Intent(context, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        context.startActivity(intent)
                     }
                 }
             }
