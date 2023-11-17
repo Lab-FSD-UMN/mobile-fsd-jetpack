@@ -38,57 +38,51 @@ sealed class MainNavRoutes(
         category = "profile",
         icon = Icons.Outlined.Person
     )
-
-    companion object {
-        private fun fromRoute(route: String): String? {
-            return when (route) {
-                Reservation.route -> "Reservation"
-                Monitoring.route -> "Monitoring"
-                Profile.route -> "Profile"
-                else -> null
-            }
-        }
-    }
 }
 
 sealed class ReservationRoutes(
     override val route: String,
     override val title: String? = null,
-    override val category: String,
+    override val category: String = "reservation",
 ) : RouteProvider {
     object RoomReservation : ReservationRoutes(
         route = "room_reservation",
         title = "Room Reservation",
-        category = "reservation",
     )
 
     object ItemReservation : ReservationRoutes(
         route = "item_reservation",
         title = "Item Reservation",
-        category = "reservation",
     )
 
-    companion object {
-        fun fromRoute(route: String): String? {
-            return when (route) {
-                RoomReservation.route -> "RoomReservation"
-                ItemReservation.route -> "ItemReservation"
-                else -> null
-            }
-        }
-    }
+    object RoomReservationForm : ReservationRoutes(
+        route = "room_reservation_form",
+        title = "Room Reservation Form",
+    )
+
+    object ItemReservationForm : ReservationRoutes(
+        route = "item_reservation_form",
+        title = "Item Reservation Form",
+    )
+
+    // nanti kalo uda berhasil reserve, munculin dialogue (?) terus langsung ke halaman monitoring
 }
 
 fun getCategory(route: String): String? {
+    // CATEGORY
+    val cat = listOf("reservation", "monitoring", "profile")
+
     return when (route) {
         // MAIN
-        MainNavRoutes.Reservation.route -> MainNavRoutes.Reservation.category
-        MainNavRoutes.Monitoring.route -> MainNavRoutes.Monitoring.category
-        MainNavRoutes.Profile.route -> MainNavRoutes.Profile.category
+        MainNavRoutes.Reservation.route -> cat[0]
+        MainNavRoutes.Monitoring.route -> cat[1]
+        MainNavRoutes.Profile.route -> cat[2]
 
         // RESERVATION
-        ReservationRoutes.RoomReservation.route -> ReservationRoutes.RoomReservation.category
-        ReservationRoutes.RoomReservation.route -> ReservationRoutes.RoomReservation.category
+        ReservationRoutes.RoomReservation.route -> cat[0]
+        ReservationRoutes.RoomReservation.route -> cat[0]
+        ReservationRoutes.RoomReservationForm.route -> cat[0]
+        ReservationRoutes.ItemReservationForm.route -> cat[0]
         else -> null
     }
 }
