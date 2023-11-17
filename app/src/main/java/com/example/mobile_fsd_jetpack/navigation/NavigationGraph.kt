@@ -7,10 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mobile_fsd_jetpack.LoginActivity
-import com.example.mobile_fsd_jetpack.MainNavRoutes
 import com.example.mobile_fsd_jetpack.pages.MonitoringScreen
 import com.example.mobile_fsd_jetpack.pages.ProfileScreen
-import com.example.mobile_fsd_jetpack.pages.ReservationRoutes
 import com.example.mobile_fsd_jetpack.pages.ReservationScreen
 import com.example.mobile_fsd_jetpack.pages.reservation.ItemReservationScreen
 import com.example.mobile_fsd_jetpack.pages.reservation.RoomReservationScreen

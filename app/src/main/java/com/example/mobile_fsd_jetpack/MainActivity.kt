@@ -16,6 +16,7 @@ import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 import com.example.mobile_fsd_jetpack.LoginActivity
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -38,7 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.mobile_fsd_jetpack.navigation.MainNavRoutes
 import com.example.mobile_fsd_jetpack.navigation.NavigationGraph
+import com.example.mobile_fsd_jetpack.navigation.RouteProvider
+import com.example.mobile_fsd_jetpack.navigation.getCategory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +50,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val mainNavController = rememberNavController()
-//            val reservationNavController = rememberNavController()
             val context = LocalContext.current
             MobilefsdjetpackTheme {
                 val bottomBarHeight = 56.dp
@@ -97,29 +100,6 @@ fun GreetingPreview() {
 }
 
 // Reference : https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
-sealed class MainNavRoutes (
-    val route: String,
-    val title: String? = null,
-    val icon: ImageVector? = null
-) {
-    object Reservation : MainNavRoutes (
-        route = "reservation_screen",
-        title = "Reserve",
-        icon = Icons.Outlined.Home
-    )
-
-    object Monitoring : MainNavRoutes (
-        route = "monitoring_screen",
-        title = "Monitoring",
-        icon = Icons.Outlined.Favorite
-    )
-
-    object Profile : MainNavRoutes (
-        route = "profile_screen",
-        title = "Profile",
-        icon = Icons.Outlined.Person
-    )
-}
 
 // Navigation graph is in another file /navigation
 // Create bottom navigation with Material 3
@@ -138,6 +118,9 @@ fun BottomBar(
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
+        Log.d("ROUTE", currentRoute.toString())
+        Log.d("ROUTE", getCategory(currentRoute.toString()).toString())
+
         screens.forEach { screen ->
             NavigationBarItem(
                 label = {
@@ -146,8 +129,7 @@ fun BottomBar(
                 icon = {
                     Icon(imageVector = screen.icon!!, contentDescription = "")
                 },
-                // Nanti bisa ditambahin biar kalo routenya masih anakannya, berarti itu tetep selected (biar warnanya beda)
-                selected = currentRoute == screen.route,
+                selected = currentRoute?.let { getCategory(it) } == screen.category,
                 onClick = {
                     navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id) {

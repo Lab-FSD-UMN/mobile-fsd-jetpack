@@ -24,8 +24,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.mobile_fsd_jetpack.MainNavRoutes
 import com.example.mobile_fsd_jetpack.R
+import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
 import com.example.mobile_fsd_jetpack.pages.reservation.ItemReservationScreen
 import com.example.mobile_fsd_jetpack.ui.theme.Background
 import com.example.mobile_fsd_jetpack.ui.theme.ButtonImage
@@ -74,34 +74,6 @@ fun ReservationScreen(navController: NavController?= null) {
         )
     }
 }
-
-sealed class ReservationRoutes (
-    val route: String,
-    val title: String? = null,
-) {
-    object RoomReservation : ReservationRoutes(
-        route = "room_reservation",
-        title = "Room Reservation"
-    )
-
-    object ItemReservation : ReservationRoutes(
-        route = "item_reservation",
-        title = "Item Reservation"
-    )
-}
-
-//@Composable
-//fun ReservationNavigationGraph(navController: NavHostController) {
-//    NavHost(navController, startDestination = ReservationRoutes.RoomReservation.route) {
-//        composable(ReservationRoutes.RoomReservation.route) {
-//            ReservationScreen(navController = navController)
-//        }
-//        composable(ReservationRoutes.ItemReservation.route) {
-//            ItemReservationScreen(navController = navController)
-//        }
-//        // yang form apa disini juga sekalian ya
-//    }
-//}
 
 @Preview(showBackground = true)
 @Composable
