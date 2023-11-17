@@ -35,20 +35,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.mobile_fsd_jetpack.pages.MonitoringScreen
-import com.example.mobile_fsd_jetpack.pages.ProfileScreen
-import com.example.mobile_fsd_jetpack.pages.ReservationScreen
+import com.example.mobile_fsd_jetpack.navigation.NavigationGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val navController = rememberNavController()
+            val mainNavController = rememberNavController()
+//            val reservationNavController = rememberNavController()
             val context = LocalContext.current
             MobilefsdjetpackTheme {
                 val bottomBarHeight = 56.dp
@@ -58,7 +56,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     bottomBar = {
                         BottomBar(
-                            navController = navController,
+                            navController = mainNavController,
                             state = buttonsVisible,
                             modifier = Modifier
                         )
@@ -71,7 +69,8 @@ class MainActivity : ComponentActivity() {
 //                            context.startActivity(intent)
 //                        }
 //                        else {
-                            NavigationGraph(navController = navController)
+                            NavigationGraph(navController = mainNavController)
+//                            ReservationNavigationGraph(navController = reservationNavController)
 //                        }
                     }
                 }
@@ -98,63 +97,38 @@ fun GreetingPreview() {
 }
 
 // Reference : https://www.c-sharpcorner.com/article/material-3-bottom-navigation-bar-in-jetpack-compose/
-sealed class Routes (
+sealed class MainNavRoutes (
     val route: String,
     val title: String? = null,
     val icon: ImageVector? = null
 ) {
-    object Reservation : Routes (
+    object Reservation : MainNavRoutes (
         route = "reservation_screen",
         title = "Reserve",
         icon = Icons.Outlined.Home
     )
 
-    object Monitoring : Routes (
+    object Monitoring : MainNavRoutes (
         route = "monitoring_screen",
         title = "Monitoring",
         icon = Icons.Outlined.Favorite
     )
 
-    object Profile : Routes (
+    object Profile : MainNavRoutes (
         route = "profile_screen",
         title = "Profile",
         icon = Icons.Outlined.Person
     )
 }
 
-// Screens to displayed are defined in another file /pages
-// Define Navigation Graph
-@Composable
-fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = Routes.Reservation.route) {
-        composable("loginActivity") {
-            val context = LocalContext.current
-            val intent = Intent(context, LoginActivity::class.java)
-            context.startActivity(intent)
-        }
-        composable(Routes.Reservation.route) {
-            ReservationScreen()
-        }
-        composable(Routes.Monitoring.route) {
-            MonitoringScreen()
-        }
-        composable(Routes.Profile.route) {
-            ProfileScreen(navController = navController)
-        }
-    }
-}
-
-fun finish() {
-    TODO("Not yet implemented")
-}
-
+// Navigation graph is in another file /navigation
 // Create bottom navigation with Material 3
 @Composable
 fun BottomBar(
     navController: NavHostController, state: MutableState<Boolean>, modifier: Modifier = Modifier
 ) {
     val screens = listOf (
-        Routes.Reservation, Routes.Monitoring, Routes.Profile
+        MainNavRoutes.Reservation, MainNavRoutes.Monitoring, MainNavRoutes.Profile
     )
 
     NavigationBar (
@@ -172,6 +146,7 @@ fun BottomBar(
                 icon = {
                     Icon(imageVector = screen.icon!!, contentDescription = "")
                 },
+                // Nanti bisa ditambahin biar kalo routenya masih anakannya, berarti itu tetep selected (biar warnanya beda)
                 selected = currentRoute == screen.route,
                 onClick = {
                     navController.navigate(screen.route) {

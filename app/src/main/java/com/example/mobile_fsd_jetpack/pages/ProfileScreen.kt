@@ -37,7 +37,8 @@ fun ProfileScreen(navController: NavController ?= null) {
             text = "Profile Screen",
             style = MaterialTheme.typography.titleLarge,
             color = Color.Black,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
         )
 
