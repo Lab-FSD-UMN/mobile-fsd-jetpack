@@ -83,6 +83,14 @@ fun getCategory(route: String): String? {
         ReservationRoutes.RoomReservation.route -> cat[0]
         ReservationRoutes.RoomReservationForm.route -> cat[0]
         ReservationRoutes.ItemReservationForm.route -> cat[0]
+
+        // MONITORING
+        // nanti tab navigation
+        // paling kalo mau ada page detailnya
+
+        // PROFILE
+        // keanya gaada apa" yak
+
         else -> null
     }
 }

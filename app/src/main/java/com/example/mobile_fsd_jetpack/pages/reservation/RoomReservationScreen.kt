@@ -14,7 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.Background
+import com.example.mobile_fsd_jetpack.ui.theme.PrimaryTextButton
 
 @Composable
 fun RoomReservationScreen(navController: NavController?= null) {
@@ -31,6 +33,14 @@ fun RoomReservationScreen(navController: NavController?= null) {
             color = Color.Black,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
+        )
+        PrimaryTextButton(
+            text = "Go to Room Reservation Form",
+            onClick = {},
+            navController = navController,
+            route = ReservationRoutes.RoomReservationForm.route,
+            modifier = Modifier
+                .padding(start = 24.dp, top = 12.dp, end = 24.dp, bottom = 12.dp)
         )
     }
 }

@@ -10,7 +10,9 @@ import com.example.mobile_fsd_jetpack.LoginActivity
 import com.example.mobile_fsd_jetpack.pages.MonitoringScreen
 import com.example.mobile_fsd_jetpack.pages.ProfileScreen
 import com.example.mobile_fsd_jetpack.pages.ReservationScreen
+import com.example.mobile_fsd_jetpack.pages.reservation.ItemReservationFormScreen
 import com.example.mobile_fsd_jetpack.pages.reservation.ItemReservationScreen
+import com.example.mobile_fsd_jetpack.pages.reservation.RoomReservationFormScreen
 import com.example.mobile_fsd_jetpack.pages.reservation.RoomReservationScreen
 
 // Screens to displayed are defined in another file /pages
@@ -40,5 +42,13 @@ fun NavigationGraph(navController: NavHostController) {
         composable(ReservationRoutes.ItemReservation.route) {
             ItemReservationScreen(navController = navController)
         }
+        composable(ReservationRoutes.RoomReservationForm.route) {
+            RoomReservationFormScreen()
+        }
+        composable(ReservationRoutes.ItemReservationForm.route) {
+            ItemReservationFormScreen()
+        }
+
+        // MONITORING
     }
 }
