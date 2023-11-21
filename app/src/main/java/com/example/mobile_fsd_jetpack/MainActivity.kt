@@ -1,11 +1,13 @@
 package com.example.mobile_fsd_jetpack
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+//import com.google.accompanist.navigation.material3.BottomNavigation
 import androidx.compose.material3.Text
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,14 +20,20 @@ import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 import com.example.mobile_fsd_jetpack.LoginActivity
 import android.content.Intent
+import androidx.navigation.NavController
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         setContent {
             val navController = rememberNavController()
             val context = LocalContext.current;
+
+//            UserAuth(context).deleteProfile()
+//            UserAuth(context).revokeToken()
             MobilefsdjetpackTheme {
                 NavHost(navController = navController, startDestination = "mainActivity") {
                     composable("mainActivity") {
@@ -33,7 +41,7 @@ class MainActivity : ComponentActivity() {
                         if (!UserAuth(context).authenticated()){
                             navController.navigate("loginActivity")
                         }
-                        Greeting("MAIN ACTIVITY")
+                        Home(navController, context)
                     }
                     composable("loginActivity") {
                         val intent = Intent(context, LoginActivity::class.java)
@@ -47,17 +55,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun Home(navController : NavController, context : Context) {
+
+
+    val nama = UserAuth(context).getNama()
+
+    Text(text="Hello $nama")
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MobilefsdjetpackTheme {
-        Greeting("MAIN ACTIVITY")
-    }
-}
