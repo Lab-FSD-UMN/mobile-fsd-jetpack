@@ -14,14 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mobile_fsd_jetpack.ui.theme.Background
+import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 
 @Composable
 fun ItemReservationFormScreen(navController: NavController?= null) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Background)
+            .background(color = AlmostWhite)
             .wrapContentSize(Alignment.Center)
             .padding(20.dp)
     ) {

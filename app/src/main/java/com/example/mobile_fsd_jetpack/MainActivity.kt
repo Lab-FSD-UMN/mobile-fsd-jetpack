@@ -19,13 +19,16 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ElevationOverlay
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.MutableState
@@ -33,8 +36,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -43,6 +50,9 @@ import com.example.mobile_fsd_jetpack.navigation.MainNavRoutes
 import com.example.mobile_fsd_jetpack.navigation.NavigationGraph
 import com.example.mobile_fsd_jetpack.navigation.RouteProvider
 import com.example.mobile_fsd_jetpack.navigation.getCategory
+import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
+import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
+import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,8 +122,13 @@ fun BottomBar(
     )
 
     NavigationBar (
-        modifier = modifier,
-        containerColor = Color.LightGray
+        modifier = modifier
+            .shadow(
+                elevation = 30.dp,
+                spotColor = Color.Gray.copy(alpha = 0.8f)
+            ),
+        containerColor = BiruMuda_Lightest,
+        contentColor = BiruUMN,
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -122,14 +137,32 @@ fun BottomBar(
         Log.d("ROUTE", getCategory(currentRoute.toString()).toString())
 
         screens.forEach { screen ->
+            val selected = currentRoute?.let { getCategory(it) } == screen.category
+
             NavigationBarItem(
                 label = {
-                    Text(text = screen.title!!)
+                    Text(
+                        text = screen.title!!,
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                        )
                 },
                 icon = {
-                    Icon(imageVector = screen.icon!!, contentDescription = "")
+                    Icon(
+                        modifier = Modifier
+                            .padding(0.dp, 2.dp)
+                            .alpha(if (selected) 1f else 0.4f),
+                        tint = BiruUMN,
+                        imageVector =
+                            when (screen.title)
+                            {
+                                "Reserve" -> ImageVector.vectorResource(R.drawable.reservation_icon)
+                                "Monitoring" -> ImageVector.vectorResource(R.drawable.monitoring_icon)
+                                "Profile" -> ImageVector.vectorResource(R.drawable.profile_icon)
+                                else -> ImageVector.vectorResource(R.drawable.question_mark_icon)
+                            },
+                        contentDescription = "")
                 },
-                selected = currentRoute?.let { getCategory(it) } == screen.category,
+                selected = selected,
                 onClick = {
                     navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -140,7 +173,8 @@ fun BottomBar(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    unselectedTextColor = Color.Gray, selectedTextColor = Color.White
+                    unselectedTextColor = BiruUMN.copy(alpha = 0.4f),
+                    selectedTextColor = BiruUMN,
                 )
             )
         }
