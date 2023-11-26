@@ -53,6 +53,13 @@ fun ReservationScreen(navController: NavController?= null) {
             .wrapContentSize(Alignment.TopCenter)
     ) {
         Header()
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(8f / 1f),
+            painter = painterResource(id = R.drawable.super_graphic),
+            contentDescription = "Super Graphic"
+        )
         Spacer(modifier = Modifier.height(20.dp))
         ButtonImage(
             text = "Room Reservation",
@@ -60,24 +67,25 @@ fun ReservationScreen(navController: NavController?= null) {
             onClick = {},
             route = ReservationRoutes.RoomReservation.route,
             navController = navController,
+            imageRatio = 56f/27f,
             modifier = Modifier
+                .padding(20.dp, 0.dp)
                 .fillMaxWidth()
-                .height(170.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .aspectRatio(56f / 27f)
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
-
+        Spacer(modifier = Modifier.height(20.dp))
         ButtonImage(
             text = "Item Reservation",
             image = R.drawable.room_reservation,
             onClick = {},
             route = ReservationRoutes.ItemReservation.route,
             navController = navController,
+            imageRatio = 56f/27f,
             modifier = Modifier
+                .padding(20.dp, 0.dp)
                 .fillMaxWidth()
-                .height(170.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .aspectRatio(56f / 27f)
         )
     }
 }
@@ -125,7 +133,7 @@ fun Header() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(26.dp)
+                    .height(28.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically

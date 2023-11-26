@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -76,6 +77,7 @@ fun ButtonImage(
     onClick: () -> Unit,
     navController: NavController ?= null,
     route: String ?= null,
+    imageRatio: Float ?= null,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -85,7 +87,8 @@ fun ButtonImage(
             painter = painterResource(id = image),
             contentDescription = "Room Reservation",
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .aspectRatio(imageRatio!!)
                 .clip(RoundedCornerShape(8.dp))
                 .scale(1f, 1f)
 //                     .contentScale(ContentScale.Crop)
