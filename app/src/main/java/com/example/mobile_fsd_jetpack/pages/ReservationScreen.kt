@@ -43,16 +43,23 @@ import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
 import com.example.mobile_fsd_jetpack.ui.theme.ButtonImage
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
+import com.example.mobile_fsd_jetpack.auth.UserAuth
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ReservationScreen(navController: NavController?= null) {
+
+    val context = LocalContext.current;
+
+    val name : String? = UserAuth(context).getNama();
+
     Column (
         modifier = Modifier
             .fillMaxSize()
             .background(color = AlmostWhite)
             .wrapContentSize(Alignment.TopCenter)
     ) {
-        Header()
+        Header(name);
         Image(
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,7 +115,7 @@ fun verticalGradient(
 
 // HEADER
 @Composable
-fun Header() {
+fun Header(name : String?) {
     Box (
         modifier = Modifier
             .fillMaxWidth()
@@ -182,7 +189,7 @@ fun Header() {
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Hi John,\nWhat do you want to reserve?",
+                text = "Hi %s,\nWhat do you want to reserve?".format(name),
                 style = TextStyle(
                     fontSize = 24.sp,
                     lineHeight = 32.sp,
