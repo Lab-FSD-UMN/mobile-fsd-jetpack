@@ -12,7 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val BiruUMN = Color(0xFF005596)
 val BiruMuda = Color(0xFF0F9ED8)
-val BiruMuda_Ligter = Color(0XFF25C0FF)
+val BiruMuda_Lighter = Color(0XFF25C0FF)
 val BiruMuda_Lightest = Color(0XFFD3F2FF)
 val Orange = Color(0xFFF28A15)
 val AlmostWhite = Color(0xFFF8F8F8)
