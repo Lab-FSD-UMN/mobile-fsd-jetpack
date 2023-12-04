@@ -81,7 +81,7 @@ fun getCategory(route: String): String? {
 
         // RESERVATION
         ReservationRoutes.RoomReservation.route -> cat[0]
-        ReservationRoutes.RoomReservation.route -> cat[0]
+        ReservationRoutes.ItemReservation.route -> cat[0]
         ReservationRoutes.RoomReservationForm.route -> cat[0]
         ReservationRoutes.ItemReservationForm.route -> cat[0]
 
