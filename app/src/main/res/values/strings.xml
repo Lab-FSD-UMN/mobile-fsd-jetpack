@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">mobile-fsd-jetpack</string>
+    <string name="item_description">%s</string>
 </resources>
