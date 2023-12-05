@@ -2,7 +2,6 @@ package com.example.mobile_fsd_jetpack.ui.theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,15 +9,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,15 +29,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.mobile_fsd_jetpack.R
 
 @Composable
 fun PrimaryTextButton(
@@ -127,9 +124,8 @@ fun ButtonImage(
     }
 }
 
-@Preview
 @Composable
-fun PageHeading(title: String ?= null) {
+fun PageHeading(title: String, navController: NavController ?= null) {
     Box (
         modifier = Modifier
             .fillMaxWidth()
@@ -145,19 +141,23 @@ fun PageHeading(title: String ?= null) {
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(0.dp, 4.dp)
         ) {
             // Back button
-            Image(
-                painter = painterResource(id = Icon.),
-                contentDescription = "LAB FSD",
-                modifier = Modifier
-                    .height(22.dp)
-                    .aspectRatio(200f / 111f),
-                contentScale = ContentScale.FillBounds
-            )
+            IconButton(
+                onClick = {
+                    navController?.popBackStack()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Back",
+                    tint = AlmostWhite
+                )
+            }
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = "Room Reservation",
+                text = title,
                 style = TextStyle(
                     fontSize = 20.sp,
                     color = AlmostWhite,

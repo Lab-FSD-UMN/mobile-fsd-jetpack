@@ -97,22 +97,6 @@ fun ReservationScreen(navController: NavController?= null) {
     }
 }
 
-// GRADIENT
-@Stable
-fun verticalGradient(
-    colors: List<Color>,
-    startY: Float = 0.0f,
-    endY: Float = Float.POSITIVE_INFINITY,
-    tileMode: TileMode = TileMode.Clamp
-): Brush {
-    return verticalGradient (
-        colors = colors,
-        startY = startY,
-        endY = endY,
-        tileMode = tileMode
-    )
-}
-
 // HEADER
 @Composable
 fun Header(name : String?) {
