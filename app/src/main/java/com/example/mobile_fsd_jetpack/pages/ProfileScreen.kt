@@ -21,22 +21,46 @@ import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 import com.example.mobile_fsd_jetpack.ui.theme.PrimaryTextButton
 
 @Composable
-fun ProfileScreen(navController: NavController ?= null) {
+fun ProfileScreen(navController: NavController? = null) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = AlmostWhite)
             .wrapContentSize(Alignment.Center)
     ) {
+        // Placeholder Image
+        // You can use an Image composable here, replacing the placeholderDrawable with your actual image
+        // Image(
+        //     painter = painterResource(id = R.drawable.your_image_resource),
+        //     contentDescription = "Profile Image",
+        //     modifier = Modifier
+        //         .size(120.dp)
+        //         .clip(CircleShape)
+        // )
+
+        // Placeholder Name
         Text(
-            text = "Profile Screen",
+            text = "John Doe", // Replace with actual name
             style = MaterialTheme.typography.titleLarge,
             color = Color.Black,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally),
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 16.dp),
             textAlign = TextAlign.Center,
         )
 
+        // Placeholder NIM
+        Text(
+            text = "123456789", // Replace with actual NIM
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.Gray,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 4.dp),
+            textAlign = TextAlign.Center,
+        )
+
+        // Logout Button
         PrimaryTextButton(
             text = "LOGOUT",
             onClick = {},
@@ -47,7 +71,6 @@ fun ProfileScreen(navController: NavController ?= null) {
         )
     }
 }
-
 @Preview(showBackground = true)
 @Composable
 fun ProfilePreview() {
