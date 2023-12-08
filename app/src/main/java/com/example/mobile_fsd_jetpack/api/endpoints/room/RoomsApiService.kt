@@ -4,8 +4,8 @@ import com.example.mobile_fsd_jetpack.api.response_model.room.GetRoomsApiRespons
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface GetRoomsApiService {
-    @GET("item")
+interface RoomsApiService {
+    @GET("room")
     fun getRooms(
     ) : Call<GetRoomsApiResponse>
 }

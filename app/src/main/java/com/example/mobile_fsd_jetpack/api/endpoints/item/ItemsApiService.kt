@@ -4,7 +4,7 @@ import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemsApiRespons
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface GetItemsApiService {
+interface ItemsApiService {
     @GET("item")
     fun getItems(
     ) : Call<GetItemsApiResponse>

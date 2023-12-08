@@ -53,7 +53,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.api.BaseAPIBuilder
-import com.example.mobile_fsd_jetpack.api.endpoints.item.GetItemsApiService
+import com.example.mobile_fsd_jetpack.api.endpoints.item.ItemsApiService
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemsApiResponse
 import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
@@ -75,7 +75,7 @@ fun ItemReservationScreen(navController: NavController?= null) {
     var items by remember { mutableStateOf<List<Item>>(emptyList()) }
 
     val retrofit = BaseAPIBuilder().retrofit
-    val getItemsApiService = retrofit.create(GetItemsApiService::class.java)
+    val getItemsApiService = retrofit.create(ItemsApiService::class.java)
     val call = getItemsApiService.getItems()
 
     call.enqueue(object : Callback<GetItemsApiResponse> {

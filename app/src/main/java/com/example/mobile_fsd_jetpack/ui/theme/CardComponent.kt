@@ -37,6 +37,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.models.Item
+import com.example.mobile_fsd_jetpack.models.Room
 
 // JANGAN LUPA BIKIN VERSI UNAVAILABLE (gabisa dipencet nanti)
 // nanti tambahin parameter gambar, nama, kode kelas, apa lagi??
@@ -44,6 +45,8 @@ import com.example.mobile_fsd_jetpack.models.Item
 fun RoomCard(
     navController: NavController ?= null,
     route: String,
+    context : Context,
+    room : Room
 ) {
     Box(
         modifier = Modifier
@@ -56,11 +59,20 @@ fun RoomCard(
                 }
             }
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.lab1),
-            contentDescription = "A Room",
-            contentScale = ContentScale.Crop,
-        )
+        room.image?.let { imageUrl ->
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data("https://f8a2-2001-448a-2042-3e13-b170-8d7f-3f42-7f45.ngrok-free.app" + imageUrl)
+                    .crossfade(true)
+                    .build(),
+                placeholder = ColorPainter(Color.Transparent),
+                contentDescription = stringResource(R.string.item_description, room.name),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .aspectRatio(1f)
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -102,7 +114,7 @@ fun RoomCard(
                         .padding(12.dp, 3.dp)
                 ) {
                     Text(
-                        text = "B301",
+                        text = "B103", // location aslinya blm ada
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontWeight = FontWeight(700),
@@ -113,7 +125,7 @@ fun RoomCard(
                 }
             }
             Text(
-                text = "Illustration and Publishing Laboratory",
+                text = room.name,
                 style = TextStyle(
                     fontSize = 14.sp,
                     fontWeight = FontWeight(700),
