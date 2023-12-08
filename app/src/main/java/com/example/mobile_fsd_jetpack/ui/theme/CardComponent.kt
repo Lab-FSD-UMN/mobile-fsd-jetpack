@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.mobile_fsd_jetpack.BuildConfig
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.models.Room
@@ -48,6 +49,7 @@ fun RoomCard(
     context : Context,
     room : Room
 ) {
+    val API_URL = BuildConfig.API_URL
     Box(
         modifier = Modifier
             .width(165.dp)
@@ -62,7 +64,7 @@ fun RoomCard(
         room.image?.let { imageUrl ->
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data("https://f8a2-2001-448a-2042-3e13-b170-8d7f-3f42-7f45.ngrok-free.app" + imageUrl)
+                    .data("${API_URL}${imageUrl}")
                     .crossfade(true)
                     .build(),
                 placeholder = ColorPainter(Color.Transparent),
@@ -143,6 +145,9 @@ fun ItemCard(
     context : Context,
     item : Item
 ) {
+
+    val API_URL = BuildConfig.API_URL
+
     Box(
         modifier = Modifier
             .width(165.dp)
@@ -157,7 +162,7 @@ fun ItemCard(
         item.image?.let { imageUrl ->
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data("https://f8a2-2001-448a-2042-3e13-b170-8d7f-3f42-7f45.ngrok-free.app" + imageUrl)
+                    .data("${API_URL}${imageUrl}")
                     .crossfade(true)
                     .build(),
                 placeholder = ColorPainter(Color.Transparent),

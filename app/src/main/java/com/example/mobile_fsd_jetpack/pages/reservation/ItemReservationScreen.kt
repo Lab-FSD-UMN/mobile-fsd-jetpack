@@ -51,6 +51,7 @@ import androidx.navigation.NavController
 import coil.Coil
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.mobile_fsd_jetpack.BuildConfig
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.api.BaseAPIBuilder
 import com.example.mobile_fsd_jetpack.api.endpoints.item.ItemsApiService
