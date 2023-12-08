@@ -43,10 +43,10 @@ fun NavigationGraph(navController: NavHostController) {
             ItemReservationScreen(navController = navController)
         }
         composable(ReservationRoutes.RoomReservationForm.route) {
-            RoomReservationFormScreen()
+            RoomReservationFormScreen(navController = navController)
         }
         composable(ReservationRoutes.ItemReservationForm.route) {
-            ItemReservationFormScreen()
+            ItemReservationFormScreen(navController = navController)
         }
 
         // MONITORING

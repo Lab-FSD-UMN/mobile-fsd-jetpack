@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mobile_fsd_jetpack.R
 
+// JANGAN LUPA BIKIN VERSI UNAVAILABLE (gabisa dipencet nanti)
 // nanti tambahin parameter gambar, nama, kode kelas, apa lagi??
 @Composable
 fun RoomCard(
