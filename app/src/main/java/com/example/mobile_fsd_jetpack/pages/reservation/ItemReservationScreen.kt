@@ -3,17 +3,29 @@ package com.example.mobile_fsd_jetpack.pages.reservation
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +45,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import coil.Coil
@@ -45,6 +58,10 @@ import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemsApiRespons
 import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
+import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
+import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
+import com.example.mobile_fsd_jetpack.ui.theme.ItemCard
+import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import com.example.mobile_fsd_jetpack.ui.theme.PrimaryTextButton
 import retrofit2.Call
 import retrofit2.Callback
@@ -65,12 +82,13 @@ fun ItemReservationScreen(navController: NavController?= null) {
         override fun onResponse(call: Call<GetItemsApiResponse>, response: Response<GetItemsApiResponse>) {
             if (response.isSuccessful) {
                 val responseBody = response.body()
+                Log.d("t", responseBody.toString())
                 responseBody?.items?.let {
                     itemsList -> items = itemsList
                 }
 
             } else {
-
+                Log.d("e", response.message())
             }
         }
 
@@ -80,75 +98,76 @@ fun ItemReservationScreen(navController: NavController?= null) {
     })
 
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .background(color = AlmostWhite)
-            .wrapContentSize(Alignment.Center)
-            .padding(20.dp)
+            .wrapContentSize(Alignment.TopCenter)
+//            .verticalScroll(rememberScrollState())
     ) {
-        Text(
-            text = "Item Reservation",
-            style = MaterialTheme.typography.titleLarge,
-            color = Color.Black,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            textAlign = TextAlign.Center,
-        )
-        PrimaryTextButton(
-            text = "Go to Item Reservation Form",
-            onClick = {},
-            navController = navController,
-            route = ReservationRoutes.ItemReservationForm.route,
-            modifier = Modifier
-                .padding(start = 24.dp, top = 12.dp, end = 24.dp, bottom = 12.dp)
-        )
+        PageHeading("Item Reservation", navController)
 
-        LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-            items(items) { item ->
-                Box(
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .wrapContentSize(Alignment.TopCenter)
+//                .verticalScroll(rememberScrollState())
+        ){
+            // SEARCH BAR
+            Box (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = BiruMuda_Lightest,
+                        shape = RoundedCornerShape(size = 8.dp)
+                    )
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(8.dp)
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .background(Color.Gray)
                 ) {
-                    item.image?.let { imageUrl ->
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data("https://ba13-2001-448a-2042-3e13-a80d-7091-665e-de02.ngrok-free.app" + imageUrl)
-                                .crossfade(true)
-                                .build(),
-                            placeholder = ColorPainter(Color.Transparent),
-                            contentDescription = stringResource(R.string.item_description, item.name),
-                            contentScale = ContentScale.Crop,
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Back",
+                        tint = BiruUMN
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "Search a lab room...",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(300),
+                            color = BiruUMN,
                         )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.3f)
-                            .background(Color(android.graphics.Color.parseColor("#0F9ED8")))
-                            .align(Alignment.BottomStart)
-                            .zIndex(1f)
-                    ){
-                        Text(
-                            text = item.name,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxSize()
-                                .background(Color.Transparent)
-                                .align(Alignment.BottomStart),
-                            style = TextStyle(
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                    }
+                    )
+                }
 
+            }
 
+            Spacer(modifier = Modifier.height(20.dp))
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+//                    .verticalScroll(rememberScrollState())
+            ) {
+                items(items) { item ->
+                    ItemCard(
+                        route = ReservationRoutes.ItemReservationForm.route,
+                        navController = navController,
+                        context = context,
+                        item = item,
+                    )
                 }
             }
-        }
 
+        }
 
     }
 }

@@ -1,7 +1,7 @@
 package com.example.mobile_fsd_jetpack.models
 
 class Item (
-    val id : Int,
+    val id : String,
     val image : String,
     val name : String,
     val quantity : Int,

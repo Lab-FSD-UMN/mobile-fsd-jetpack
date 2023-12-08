@@ -7,7 +7,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 class BaseAPIBuilder {
     val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("https://ba13-2001-448a-2042-3e13-a80d-7091-665e-de02.ngrok-free.app/api/")
+            .baseUrl("https://f8a2-2001-448a-2042-3e13-b170-8d7f-3f42-7f45.ngrok-free.app/api/")
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }
