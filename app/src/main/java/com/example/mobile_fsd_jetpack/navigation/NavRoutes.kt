@@ -44,6 +44,7 @@ sealed class MainNavRoutes(
 sealed class ReservationRoutes(
     override val route: String,
     override val title: String? = null,
+    val id : String ?= null,
     override val category: String = "reservation",
 ) : RouteProvider {
     object RoomReservation : ReservationRoutes(
@@ -59,11 +60,13 @@ sealed class ReservationRoutes(
     object RoomReservationForm : ReservationRoutes(
         route = "room_reservation_form",
         title = "Room Reservation Form",
+        id = null
     )
 
     object ItemReservationForm : ReservationRoutes(
         route = "item_reservation_form",
         title = "Item Reservation Form",
+        id = null
     )
 
     // nanti kalo uda berhasil reserve, munculin dialogue (?) terus langsung ke halaman monitoring

@@ -2,10 +2,14 @@ package com.example.mobile_fsd_jetpack.navigation
 
 import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.mobile_fsd_jetpack.LoginActivity
 import com.example.mobile_fsd_jetpack.pages.MonitoringScreen
 import com.example.mobile_fsd_jetpack.pages.ProfileScreen
@@ -42,11 +46,15 @@ fun NavigationGraph(navController: NavHostController) {
         composable(ReservationRoutes.ItemReservation.route) {
             ItemReservationScreen(navController = navController)
         }
-        composable(ReservationRoutes.RoomReservationForm.route) {
-            RoomReservationFormScreen(navController = navController)
+        composable("${ReservationRoutes.RoomReservationForm.route}/{id}") {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val id = navBackStackEntry?.arguments?.getString("id")
+            RoomReservationFormScreen(navController = navController, id = id)
         }
-        composable(ReservationRoutes.ItemReservationForm.route) {
-            ItemReservationFormScreen(navController = navController)
+        composable("${ReservationRoutes.ItemReservationForm.route}/{id}") {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val id = navBackStackEntry?.arguments?.getString("id")
+            ItemReservationFormScreen(navController = navController, id = id)
         }
 
         // MONITORING

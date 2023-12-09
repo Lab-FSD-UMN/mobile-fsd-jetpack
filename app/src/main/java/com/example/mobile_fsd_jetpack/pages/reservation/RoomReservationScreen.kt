@@ -151,7 +151,7 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
             ) {
                 items(rooms) { room ->
                     RoomCard(
-                        route = ReservationRoutes.ItemReservationForm.route,
+                        route = "${ReservationRoutes.RoomReservationForm.route}/${room.id}",
                         navController = navController,
                         context = context,
                         room = room,

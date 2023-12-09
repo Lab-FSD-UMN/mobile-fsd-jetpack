@@ -160,7 +160,7 @@ fun ItemReservationScreen(navController: NavController?= null) {
             ) {
                 items(items) { item ->
                     ItemCard(
-                        route = ReservationRoutes.ItemReservationForm.route,
+                        route = "${ReservationRoutes.ItemReservationForm.route}/${item.id}",
                         navController = navController,
                         context = context,
                         item = item,
