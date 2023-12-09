@@ -49,12 +49,12 @@ fun NavigationGraph(navController: NavHostController) {
         composable("${ReservationRoutes.RoomReservationForm.route}/{id}") {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val id = navBackStackEntry?.arguments?.getString("id")
-            RoomReservationFormScreen(navController = navController, id = id)
+            RoomReservationFormScreen(navController = navController, id = id, imageUrl = null) // imageUrl bwt preview testing
         }
         composable("${ReservationRoutes.ItemReservationForm.route}/{id}") {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val id = navBackStackEntry?.arguments?.getString("id")
-            ItemReservationFormScreen(navController = navController, id = id)
+            ItemReservationFormScreen(navController = navController, id = id, imageUrl = null)
         }
 
         // MONITORING
