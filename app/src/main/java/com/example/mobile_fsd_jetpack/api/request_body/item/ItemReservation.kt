@@ -9,5 +9,6 @@ class ItemReservation (
     val reservation_date_start : String,
     val reservation_date_end : String,
     val reservation_time_start : String,
-    val reservation_time_end : String
+    val reservation_time_end : String,
+    val note : String
 )

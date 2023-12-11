@@ -353,7 +353,8 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                                 reservation_date_start = selectedDate,
                                 reservation_date_end = selectedDate,
                                 reservation_time_start = startTime,
-                                reservation_time_end = endTime
+                                reservation_time_end = endTime,
+                                note = description
                             )
 
                             val call = getItemsApiService.reserveItem(

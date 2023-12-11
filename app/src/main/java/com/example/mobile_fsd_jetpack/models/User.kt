@@ -1,7 +1,7 @@
 package com.example.mobile_fsd_jetpack.models
 
 class User (
-    val id : Int,
+    val id : String,
     val name : String,
     val nim : String,
     val phone_number : String,
