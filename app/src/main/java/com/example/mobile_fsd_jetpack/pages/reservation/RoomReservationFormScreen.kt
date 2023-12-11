@@ -35,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -123,25 +124,29 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
 
     val retrofit = BaseAPIBuilder().retrofit
     val getRoomsApiService = retrofit.create(RoomsApiService::class.java)
-    val call = getRoomsApiService.getRoomById(id)
 
-    call.enqueue(object : Callback<GetRoomByIDApiResponse> {
-        override fun onResponse(call: Call<GetRoomByIDApiResponse>, response: Response<GetRoomByIDApiResponse>) {
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                responseBody?.data?.let { data ->
-                    room = data
+    LaunchedEffect(Unit){
+        val call = getRoomsApiService.getRoomById(id)
+
+        call.enqueue(object : Callback<GetRoomByIDApiResponse> {
+            override fun onResponse(call: Call<GetRoomByIDApiResponse>, response: Response<GetRoomByIDApiResponse>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    responseBody?.data?.let { data ->
+                        room = data
+                    }
+
+                } else {
+                    Log.d("e", response.message())
                 }
-
-            } else {
-                Log.d("e", response.message())
             }
-        }
 
-        override fun onFailure(call: Call<GetRoomByIDApiResponse>, t: Throwable) {
-            Log.d("onFailure", t.message.toString())
-        }
-    })
+            override fun onFailure(call: Call<GetRoomByIDApiResponse>, t: Throwable) {
+                Log.d("onFailure", t.message.toString())
+            }
+        })
+
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

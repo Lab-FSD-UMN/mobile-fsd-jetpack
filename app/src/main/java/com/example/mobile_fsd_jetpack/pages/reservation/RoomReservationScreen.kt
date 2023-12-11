@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,26 +70,30 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
 
     val retrofit = BaseAPIBuilder().retrofit
     val getRoomsApiService = retrofit.create(RoomsApiService::class.java)
-    val call = getRoomsApiService.getRooms()
 
-    call.enqueue(object : Callback<GetRoomsApiResponse> {
-        override fun onResponse(call: Call<GetRoomsApiResponse>, response: Response<GetRoomsApiResponse>) {
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                Log.d("t", responseBody.toString())
-                responseBody?.data?.let {
-                        roomList -> rooms = roomList
+    LaunchedEffect(Unit){
+        val call = getRoomsApiService.getRooms()
+
+        call.enqueue(object : Callback<GetRoomsApiResponse> {
+            override fun onResponse(call: Call<GetRoomsApiResponse>, response: Response<GetRoomsApiResponse>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    Log.d("t", responseBody.toString())
+                    responseBody?.data?.let {
+                            roomList -> rooms = roomList
+                    }
+
+                } else {
+                    Log.d("e", response.message())
                 }
-
-            } else {
-                Log.d("e", response.message())
             }
-        }
 
-        override fun onFailure(call: Call<GetRoomsApiResponse>, t: Throwable) {
-            Log.d("onFailure", t.message.toString())
-        }
-    })
+            override fun onFailure(call: Call<GetRoomsApiResponse>, t: Throwable) {
+                Log.d("onFailure", t.message.toString())
+            }
+        })
+    }
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

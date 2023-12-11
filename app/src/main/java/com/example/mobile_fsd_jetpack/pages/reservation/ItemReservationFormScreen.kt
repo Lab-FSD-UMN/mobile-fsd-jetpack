@@ -27,6 +27,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +35,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material.AlertDialog
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,15 +63,22 @@ import com.example.mobile_fsd_jetpack.BuildConfig.API_URL
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.api.BaseAPIBuilder
 import com.example.mobile_fsd_jetpack.api.endpoints.item.ItemsApiService
+import com.example.mobile_fsd_jetpack.api.request_body.item.ItemReservation
+import com.example.mobile_fsd_jetpack.api.response_model.ApiResponse
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemByIDApiResponse
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemsApiResponse
+import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
+import kotlinx.coroutines.delay
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -119,29 +130,36 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
     val context = LocalContext.current
 
     var item by remember { mutableStateOf<Item?>(null) }
-    var itemIsNotFound: Boolean = false
+    var itemIsNotFound by remember { mutableStateOf(false)}
+//    var showDialog by remember { mutableStateOf(false) }
+    var modalData by remember { mutableStateOf<ApiResponse?>(null) }
 
     val retrofit = BaseAPIBuilder().retrofit
     val getItemsApiService = retrofit.create(ItemsApiService::class.java)
-    val call = getItemsApiService.getItemById(id)
 
-    call.enqueue(object : Callback<GetItemByIDApiResponse> {
-        override fun onResponse(call: Call<GetItemByIDApiResponse>, response: Response<GetItemByIDApiResponse>) {
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                responseBody?.data?.let { data ->
-                    item = data
+    LaunchedEffect(id) {
+        if (id != null){
+            val call = getItemsApiService.getItemById(id)
+            call.enqueue(object : Callback<GetItemByIDApiResponse> {
+                override fun onResponse(call: Call<GetItemByIDApiResponse>, response: Response<GetItemByIDApiResponse>) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+                        responseBody?.data?.let { data ->
+                            item = data
+                        }
+
+                    } else {
+                        Log.d("e", response.message())
+                    }
                 }
 
-            } else {
-                Log.d("e", response.message())
-            }
+                override fun onFailure(call: Call<GetItemByIDApiResponse>, t: Throwable) {
+                    Log.d("onFailure", t.message.toString())
+                }
+            })
         }
-
-        override fun onFailure(call: Call<GetItemByIDApiResponse>, t: Throwable) {
-            Log.d("onFailure", t.message.toString())
-        }
-    })
+    }
+//
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -208,6 +226,9 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                     var selectedDate by remember { mutableStateOf("Select Date") }
                     var startTime by remember { mutableStateOf("Select Start Time") }
                     var endTime by remember { mutableStateOf("Select End Time") }
+                    var quantity by remember { mutableStateOf(1) }
+                    var description by remember { mutableStateOf("") }
+
 
                     BasicTextField(
                         value = selectedDate,
@@ -243,7 +264,7 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                                 .background(MaterialTheme.colorScheme.surface)
                                 .clickable {
                                     showTimePickerDialog(context) { selectedHour, selectedMinute ->
-                                        startTime = "Start Time : $selectedHour:$selectedMinute"
+                                        startTime = "$selectedHour:$selectedMinute"
                                     }
                                 }
                         ) {
@@ -270,7 +291,7 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                                 .background(MaterialTheme.colorScheme.surface)
                                 .clickable {
                                     showTimePickerDialog(context) { selectedHour, selectedMinute ->
-                                        endTime = "End Time : $selectedHour:$selectedMinute"
+                                        endTime = "$selectedHour:$selectedMinute"
                                     }
                                 }
                         ) {
@@ -291,8 +312,6 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    var quantity by remember { mutableStateOf(1) }
-
                     OutlinedTextField(
                         value = quantity.toString(),
                         onValueChange = {
@@ -305,11 +324,9 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    var textInput by remember { mutableStateOf("") }
-
                     OutlinedTextField(
-                        value = textInput,
-                        onValueChange = { textInput = it },
+                        value = description,
+                        onValueChange = { description = it },
                         label = { Text("Description (Purpose)") },
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
                         modifier = Modifier.fillMaxWidth()
@@ -320,6 +337,50 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
 
                     Button(
                         onClick = {
+                            // POST the reservation
+
+                            Log.d("date", selectedDate)
+                            Log.d("start_time", startTime)
+                            Log.d("end_time", endTime)
+                            Log.d("qty", quantity.toString())
+                            Log.d("desc", description)
+
+                            val userToken = UserAuth(context).getToken()
+
+                            val body = ItemReservation(
+                                item_id = it.id,
+                                quantity = quantity,
+                                reservation_date_start = selectedDate,
+                                reservation_date_end = selectedDate,
+                                reservation_time_start = startTime,
+                                reservation_time_end = endTime
+                            )
+
+                            val call = getItemsApiService.reserveItem(
+                                "Bearer ${userToken}",
+                                body
+                            )
+
+                            call.enqueue(object : Callback<ApiResponse> {
+                                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                                    val responseBody = response.body()
+//                                    Log.d("bid", responseBody.toString())
+                                    modalData = ApiResponse(
+                                        status = responseBody?.status ?: 400,
+                                        message = responseBody?.message ?: "Failed to reserve item."
+                                        // masih gagal klo buat response 400, ntah knp kalo 201 slalu bs kebaca statusny
+                                        // slain itu null trs
+                                    )
+                                }
+
+                                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                                    modalData = ApiResponse(
+                                        status = 500,
+                                        message = "Failed to process your reservation."
+                                    )
+                                }
+                            })
+
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -333,7 +394,32 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                 Text(text="Loading")
             }
         }
+
+        if (modalData != null){
+            ShowDialog(
+                status = modalData!!.status,
+                message = modalData!!.message,
+                onDismiss = { modalData = null }
+            )
+        }
     }
+}
+
+@Composable
+fun ShowDialog(status : Int, message: String, onDismiss: () -> Unit) {
+    val title = if (status == 201) "Success" else "Fail"
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = { Text(text = title) },
+        text = { Text(text = message) },
+        buttons = {
+            Button(
+                onClick = { onDismiss() }
+            ) {
+                Text(text = "OK")
+            }
+        }
+    )
 }
 
 
