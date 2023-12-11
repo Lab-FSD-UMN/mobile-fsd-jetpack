@@ -79,7 +79,7 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     Log.d("t", responseBody.toString())
-                    responseBody?.data?.let {
+                    responseBody?.data?.rooms?.let {
                             roomList -> rooms = roomList
                     }
 
