@@ -125,27 +125,28 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
     val retrofit = BaseAPIBuilder().retrofit
     val getRoomsApiService = retrofit.create(RoomsApiService::class.java)
 
-    LaunchedEffect(Unit){
-        val call = getRoomsApiService.getRoomById(id)
+    LaunchedEffect(id){
+        if (id != null){
+            val call = getRoomsApiService.getRoomById(id)
 
-        call.enqueue(object : Callback<GetRoomByIDApiResponse> {
-            override fun onResponse(call: Call<GetRoomByIDApiResponse>, response: Response<GetRoomByIDApiResponse>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    responseBody?.data?.let { data ->
-                        room = data
+            call.enqueue(object : Callback<GetRoomByIDApiResponse> {
+                override fun onResponse(call: Call<GetRoomByIDApiResponse>, response: Response<GetRoomByIDApiResponse>) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+                        responseBody?.data?.let { data ->
+                            room = data
+                        }
+
+                    } else {
+                        Log.d("e", response.message())
                     }
-
-                } else {
-                    Log.d("e", response.message())
                 }
-            }
 
-            override fun onFailure(call: Call<GetRoomByIDApiResponse>, t: Throwable) {
-                Log.d("onFailure", t.message.toString())
-            }
-        })
-
+                override fun onFailure(call: Call<GetRoomByIDApiResponse>, t: Throwable) {
+                    Log.d("onFailure", t.message.toString())
+                }
+            })
+        }
     }
 
     Column(
