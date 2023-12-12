@@ -1,10 +1,13 @@
 package com.example.mobile_fsd_jetpack.ui.theme
 
+import android.util.Log
+import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,18 +34,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_fsd_jetpack.R
-import com.example.mobile_fsd_jetpack.pages.RoomReservation
+import com.example.mobile_fsd_jetpack.pages.MonitoringData
 
 // Reference : https://developer.android.com/jetpack/compose/components/bottom-sheets
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoomReservationCard(
-    reservation: RoomReservation,
+fun ReservationCard(
+    reservation: MonitoringData,
     onDismiss: () -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
     // val coroutineScope = rememberCoroutineScope() // kalo ini mau dipake nantinya, perlu jadi parameter buat reservationDetailBottomSheet()
     var showBottomSheet by remember { mutableStateOf(false) }
+
+    val isRoom: Boolean = reservation.category.lowercase() == "room"
 
     Card(
         onClick = { showBottomSheet = true },
@@ -56,7 +62,10 @@ fun RoomReservationCard(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Room: ${reservation.roomName}",
+                text = if (isRoom)
+                    "Room: ${reservation.roomName}"
+                else
+                    "Item: ${reservation.itemName}",
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
@@ -92,13 +101,13 @@ fun RoomReservationCard(
             sheetState = bottomSheetState,
             containerColor = BiruMuda_Lightest,
         ) {
-            ReservationDetailBottomSheet(reservation)
+            DetailBottomSheet(reservation, isRoom)
         }
     }
 }
 
 @Composable
-fun ReservationDetailBottomSheet(reservation: RoomReservation) { // nanti tambahin parameter nilai
+fun DetailBottomSheet(reservation: MonitoringData, isRoom: Boolean) { // nanti tambahin parameter nilai
     Column (
         modifier = Modifier
             .background(BiruMuda_Lightest)
@@ -123,7 +132,9 @@ fun ReservationDetailBottomSheet(reservation: RoomReservation) { // nanti tambah
                     .clip(RoundedCornerShape(8.dp))
             )
             Text(
-                text = "${reservation.roomName} - Illustration and Publishing Laboratory",
+                text =
+                if (isRoom) "${reservation.roomCode} - ${reservation.roomName}"
+                else "${reservation.itemName}",
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight(700),
@@ -139,8 +150,12 @@ fun ReservationDetailBottomSheet(reservation: RoomReservation) { // nanti tambah
                     .background(color = BiruMuda_Lighter)
             )
 
-            TheSection(title = "Date", body = "Monday, 1 November 2023")
+            if (!isRoom) TheSection(title = "Quantity", body = "${reservation.qty} pcs")
+
+            TheSection(title = "Date", body = reservation.reservationDate)
             TheSection(title = "Time", body = "16.00 - 19.00")
+
+            Spacer(modifier = Modifier.height(5.dp))
             TheSection(title = "Description", body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
 
             Box(
@@ -148,11 +163,12 @@ fun ReservationDetailBottomSheet(reservation: RoomReservation) { // nanti tambah
                     .fillMaxWidth()
                     .background(
                         color = when (reservation.status) {
-                        "approve" -> Green
-                        "pending" -> Yellow
-                        "decline" -> Red
-                        else -> Color.Gray
-                    })
+                            "approve" -> Green
+                            "pending" -> Yellow
+                            "decline" -> Red
+                            else -> Color.Gray
+                        }
+                    )
                     .padding(0.dp, 8.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
@@ -179,11 +195,25 @@ fun ReservationDetailBottomSheet(reservation: RoomReservation) { // nanti tambah
 @Composable
 fun TheSection(title: String, body: String) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.Top),
+        verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        SectionTitle(text = title)
-        SectionBody(text = body)
+        if (title != "Description") {
+            SectionTitle(text = title)
+            SectionBody(text = body)
+        }
+        else {
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight(600),
+                    color = BiruUMN,
+                    textAlign = TextAlign.Center,
+                )
+            )
+            SectionTitle(text = body)
+        }
     }
 }
 
@@ -192,9 +222,9 @@ fun SectionTitle(text: String) {
     Text(
         text = text,
         style = TextStyle(
-            fontSize = 16.sp,
-            fontWeight = FontWeight(600),
-            color = BiruUMN,
+            fontSize = 14.sp,
+            fontWeight = FontWeight(400),
+            color = BiruMuda,
             textAlign = TextAlign.Center,
         )
     )
@@ -205,9 +235,9 @@ fun SectionBody(text: String) {
     Text(
         text = text,
         style = TextStyle(
-            fontSize = 14.sp,
-            fontWeight = FontWeight(400),
-            color = BiruMuda,
+            fontSize = 16.sp,
+            fontWeight = FontWeight(600),
+            color = BiruUMN,
             textAlign = TextAlign.Center,
         )
     )

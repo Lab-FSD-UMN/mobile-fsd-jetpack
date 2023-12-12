@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -32,7 +30,23 @@ import com.example.mobile_fsd_jetpack.pages.monitoring.RoomMonitoringScreen
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
-import com.example.mobile_fsd_jetpack.ui.theme.RoomReservationCard
+
+data class MonitoringData (
+    // ROOM
+    val roomName: String? = null,
+    val roomCode: String? = null,
+
+    // ITEM
+    val itemName: String? = null,
+    val qty: Int? = null,
+
+    // GENERAL
+    val category: String,
+    val status: String,
+    val reservationDate: String,
+    val description: String? = null, // nanti dibikin jangan optional
+    // val image: ?????
+)
 
 
 @Composable
@@ -54,41 +68,7 @@ fun MonitoringScreen(navController: NavController? = null) {
         )
         Spacer(modifier = Modifier.height(20.dp))
         TabScreen()
-        // Dummy Data
-        RoomReservationList()
     }
-}
-
-@Composable
-fun RoomReservationList() {
-    val roomReservations = getDummyRoomReservations() // Replace this with your actual data
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        itemsIndexed(roomReservations) { _, reservation ->
-            RoomReservationCard(reservation, onDismiss = {})
-        }
-    }
-}
-
-data class RoomReservation(
-    val roomName: String,
-    val status: String,
-    val reservationDate: String,
-    val description: String? = null,
-)
-
-fun getDummyRoomReservations(): List<RoomReservation> {
-    // Replace this with your actual data retrieval logic
-    return listOf(
-        RoomReservation("Room 101", "approve", "2023-12-10"),
-        RoomReservation("Room 101", "pending", "2023-12-10"),
-        RoomReservation("Room 102", "decline", "2023-12-12"),
-        // Add more dummy data as needed
-    )
 }
 
 @Composable
@@ -98,7 +78,10 @@ fun TabScreen() {
     val tabs = listOf("Room Reservation", "Item Reservation")
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        TabRow(selectedTabIndex = tabIndex) {
+        TabRow(
+            selectedTabIndex = tabIndex,
+            modifier = Modifier.padding(bottom = 15.dp)
+        ) {
             tabs.forEachIndexed { index, title ->
                 val isSelected = tabIndex == index
 
