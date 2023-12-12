@@ -17,7 +17,7 @@ fun RoomMonitoringScreen() {
             .fillMaxWidth()
     ) {
         itemsIndexed(roomReservations) { _, reservation ->
-            ReservationCard(reservation, onDismiss = {})
+            ReservationCard(reservation)
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.example.mobile_fsd_jetpack.pages.monitoring
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -18,8 +17,7 @@ fun ItemMonitoringScreen() {
             .fillMaxWidth()
     ) {
         itemsIndexed(itemReservations) { _, reservation ->
-            ReservationCard(reservation, onDismiss = {})
-            Log.d("CONSOLE", reservation.toString())
+            ReservationCard(reservation)
         }
     }
 }

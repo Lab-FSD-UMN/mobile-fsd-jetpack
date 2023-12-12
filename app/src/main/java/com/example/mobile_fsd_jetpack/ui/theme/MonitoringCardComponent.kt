@@ -1,7 +1,5 @@
 package com.example.mobile_fsd_jetpack.ui.theme
 
-import android.util.Log
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +40,6 @@ import com.example.mobile_fsd_jetpack.pages.MonitoringData
 @Composable
 fun ReservationCard(
     reservation: MonitoringData,
-    onDismiss: () -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
     // val coroutineScope = rememberCoroutineScope() // kalo ini mau dipake nantinya, perlu jadi parameter buat reservationDetailBottomSheet()
