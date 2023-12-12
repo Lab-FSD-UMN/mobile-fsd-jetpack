@@ -64,83 +64,83 @@ fun MonitoringScreen(navController: NavController? = null) {
         Spacer(modifier = Modifier.height(20.dp))
         TabScreen()
         // Dummy Data
-        RoomReservationList()
+//        RoomReservationList()
     }
 }
+//
+//@Composable
+//fun RoomReservationList() {
+//    val roomReservations = getDummyRoomReservations() // Replace this with your actual data
+//
+//    LazyColumn(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(16.dp)
+//    ) {
+//        itemsIndexed(roomReservations) { _, reservation ->
+//            RoomReservationCard(reservation)
+//        }
+//    }
+//}
+//
+//@Composable
+//fun RoomReservationCard(reservation: RoomReservation) {
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(8.dp),
+////        elevation = 4.dp // Convert Dp to CardElevation
+//    ) {
+//        Column(
+//            modifier = Modifier
+//                .padding(16.dp)
+//        ) {
+//            Text(
+//                text = "Room: ${reservation.roomName}",
+//                style = TextStyle(
+//                    fontWeight = FontWeight.Bold,
+//                    fontSize = 18.sp
+//                )
+//            )
+//            Text(
+//                text = "Status: ${reservation.status}",
+//                style = TextStyle(
+//                    fontWeight = FontWeight.Normal,
+//                    fontSize = 16.sp,
+//                    color = when (reservation.status) {
+//                        "approve" -> Color.Green
+//                        "pending" -> Color.Yellow
+//                        "decline" -> Color.Red
+//                        else -> Color.Black // Default color, you can adjust this based on your needs
+//                    }
+//                )
+//            )
+//            Text(
+//                text = "Reservation Date: ${reservation.reservationDate}",
+//                style = TextStyle(
+//                    fontWeight = FontWeight.Normal,
+//                    fontSize = 14.sp
+//                )
+//            )
+//        }
+//    }
+//}
 
-@Composable
-fun RoomReservationList() {
-    val roomReservations = getDummyRoomReservations() // Replace this with your actual data
+//data class RoomReservation(
+//    val roomName: String,
+//    val status: String,
+//    val reservationDate: String
+//)
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        itemsIndexed(roomReservations) { _, reservation ->
-            RoomReservationCard(reservation)
-        }
-    }
-}
-
-@Composable
-fun RoomReservationCard(reservation: RoomReservation) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-//        elevation = 4.dp // Convert Dp to CardElevation
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Room: ${reservation.roomName}",
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-            )
-            Text(
-                text = "Status: ${reservation.status}",
-                style = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp,
-                    color = when (reservation.status) {
-                        "approve" -> Color.Green
-                        "pending" -> Color.Yellow
-                        "decline" -> Color.Red
-                        else -> Color.Black // Default color, you can adjust this based on your needs
-                    }
-                )
-            )
-            Text(
-                text = "Reservation Date: ${reservation.reservationDate}",
-                style = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp
-                )
-            )
-        }
-    }
-}
-
-data class RoomReservation(
-    val roomName: String,
-    val status: String,
-    val reservationDate: String
-)
-
-fun getDummyRoomReservations(): List<RoomReservation> {
-    // Replace this with your actual data retrieval logic
-    return listOf(
-        RoomReservation("Room 101", "approve", "2023-12-10"),
-        RoomReservation("Room 101", "pending", "2023-12-10"),
-        RoomReservation("Room 102", "decline", "2023-12-12"),
-        // Add more dummy data as needed
-    )
-}
+//fun getDummyRoomReservations(): List<RoomReservation> {
+//    // Replace this with your actual data retrieval logic
+//    return listOf(
+//        RoomReservation("Room 101", "approve", "2023-12-10"),
+//        RoomReservation("Room 101", "pending", "2023-12-10"),
+//        RoomReservation("Room 102", "decline", "2023-12-12"),
+//        // Add more dummy data as needed
+//    )
+//}
 
 
 @Composable
