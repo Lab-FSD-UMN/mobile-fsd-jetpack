@@ -13,7 +13,7 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-        buildConfigField("String", "API_URL", "\"https://4d29-2001-448a-2042-3e13-499f-4db5-e6b6-90d5.ngrok-free.app\"")
+        buildConfigField("String", "API_URL", "\"https://b0c0-2001-448a-2042-3e13-bc6f-48ed-67ea-f3ff.ngrok-free.app\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

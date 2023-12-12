@@ -18,9 +18,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -33,9 +35,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -67,6 +71,8 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
     val context = LocalContext.current
 
     var rooms by remember { mutableStateOf<List<Room>>(emptyList()) }
+    var allRooms by remember { mutableStateOf<List<Room>>(emptyList()) }
+    var searchText by remember { mutableStateOf("") }
 
     val retrofit = BaseAPIBuilder().retrofit
     val getRoomsApiService = retrofit.create(RoomsApiService::class.java)
@@ -80,7 +86,9 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                     val responseBody = response.body()
                     Log.d("t", responseBody.toString())
                     responseBody?.data?.rooms?.let {
-                            roomList -> rooms = roomList
+                            roomList ->
+                                rooms = roomList
+                                allRooms = roomList
                     }
 
                 } else {
@@ -111,37 +119,89 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
 //                .verticalScroll(rememberScrollState())
         ) {
             // SEARCH BAR
-            Box (
+//            Box (
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .background(
+//                        color = BiruMuda_Lightest,
+//                        shape = RoundedCornerShape(size = 8.dp)
+//                    )
+//            ) {
+//                Row(
+//                    horizontalArrangement = Arrangement.Start,
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    modifier = Modifier
+//                        .padding(8.dp)
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.Search,
+//                        contentDescription = "Back",
+//                        tint = BiruUMN
+//                    )
+//                    Spacer(modifier = Modifier.width(6.dp))
+//                    Text(
+//                        text = "Search a lab room...",
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            fontWeight = FontWeight(300),
+//                            color = BiruUMN,
+//                        )
+//                    )
+//                }
+//
+//            }
+
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(8.dp)
                     .background(
-                        color = BiruMuda_Lightest,
-                        shape = RoundedCornerShape(size = 8.dp)
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(8.dp)
                     )
+                    .padding(horizontal = 8.dp)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Back",
-                        tint = BiruUMN
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "Search a lab room...",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight(300),
-                            color = BiruUMN,
+                    Button(
+                        onClick = {
+                            if (searchText == ""){
+                                rooms = allRooms
+                            } else {
+                                rooms = allRooms.filter { it.name.contains(searchText, ignoreCase = true) }
+                            }
+                        }
+                    ){
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search",
+                            tint = Color.Gray,
                         )
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    TextField(
+                        value = searchText,
+                        onValueChange = { searchText = it },
+                        placeholder = {
+                            Text(
+                                text = "Search a lab room...",
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Search
+                        ),
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp)
                     )
                 }
-
             }
+
 
 
             Spacer(modifier = Modifier.height(20.dp))
