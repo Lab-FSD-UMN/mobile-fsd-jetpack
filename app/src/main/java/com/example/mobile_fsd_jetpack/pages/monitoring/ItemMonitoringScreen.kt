@@ -42,7 +42,7 @@ fun ItemMonitoringScreen() {
 
     LaunchedEffect(Unit){
 
-        val userToken = UserAuth(context).getToken()
+        val userToken = UserAuth(context).getToken()     
 
         val retrofit = BaseAPIBuilder().retrofit
         val getItemsApiService = retrofit.create(ItemsApiService::class.java)
@@ -71,12 +71,12 @@ fun ItemMonitoringScreen() {
 
     Column {
         Text(text = "Udh integrasi AIR")
-        RoomReservationList(itemReservations)
+        ItemReservationList(itemReservations)
     }
 }
 
 @Composable
-fun RoomReservationList(reservations : List<ItemReservationData?>) {
+fun ItemReservationList(reservations : List<ItemReservationData?>) {
 
     LazyColumn(
         modifier = Modifier
@@ -84,13 +84,13 @@ fun RoomReservationList(reservations : List<ItemReservationData?>) {
             .padding(16.dp)
     ) {
         itemsIndexed(reservations) { _, reservation ->
-            RoomReservationCard(reservation)
+            ItemReservationCard(reservation)
         }
     }
 }
 
 @Composable
-fun RoomReservationCard(reservation: ItemReservationData?) {
+fun ItemReservationCard(reservation: ItemReservationData?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
