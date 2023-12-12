@@ -17,3 +17,8 @@ val BiruMuda_Lightest = Color(0XFFD3F2FF)
 val Orange = Color(0xFFF28A15)
 val AlmostWhite = Color(0xFFF8F8F8)
 
+// STATUS
+val Green = Color(0xFF00AF5B)
+val Yellow = Color(0xFFF28A15)
+val Red = Color(0xFFB80000)
+
