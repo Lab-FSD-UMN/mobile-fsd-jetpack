@@ -59,7 +59,7 @@ fun RoomMonitoringScreen() {
                     }
 
                 } else {
-                    Log.d("CONSOLE", response.message())
+                    Log.w("CONSOLE", response.message())
                 }
             }
 
@@ -91,6 +91,7 @@ fun RoomReservationList(reservations : List<RoomReservationData?>) {
             .padding(16.dp)
     ) {
         itemsIndexed(reservations) { _, reservation ->
+            Log.d("items", reservation.toString())
             RoomReservationCard(reservation)
         }
     }

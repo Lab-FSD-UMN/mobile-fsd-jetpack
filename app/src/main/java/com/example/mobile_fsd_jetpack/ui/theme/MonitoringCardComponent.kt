@@ -32,20 +32,83 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_fsd_jetpack.R
+import com.example.mobile_fsd_jetpack.models.ItemReservationData
+import com.example.mobile_fsd_jetpack.models.Room
+import com.example.mobile_fsd_jetpack.models.RoomReservationData
 import com.example.mobile_fsd_jetpack.pages.MonitoringData
 
 // Reference : https://developer.android.com/jetpack/compose/components/bottom-sheets
 
+class GeneralMonitoringData (
+    val statusText : String,
+    val statusColor: Color,
+    val reservationStartTime : String,
+    val reservationEndTime : String,
+    val note : String,
+    val createdAt : String,
+    val updatedAt : String,
+)
+
+fun statusText(status: Int) : String {
+    val formattedStatus = when (status) {
+        1 -> "Approved"
+        0 -> "Pending"
+        2 -> "Rejected"
+        else -> "-"
+    }
+
+    return formattedStatus
+}
+
+fun statusColor(status: Int) : Color {
+    val formattedStatus = when (status) {
+        1 -> Green
+        0 -> Yellow
+        2 -> Red
+        else -> Color.Gray
+    }
+
+    return formattedStatus
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservationCard(
-    reservation: MonitoringData,
+    roomReservation: RoomReservationData? = null,
+    itemReservation: ItemReservationData? = null,
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
     // val coroutineScope = rememberCoroutineScope() // kalo ini mau dipake nantinya, perlu jadi parameter buat reservationDetailBottomSheet()
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    val isRoom: Boolean = reservation.category.lowercase() == "room"
+    // If itemReservation == null, then it is a room
+    val isRoom: Boolean = itemReservation == null
+    var data: GeneralMonitoringData = GeneralMonitoringData("", Color.Gray, "", "", "", "", "")
+
+    // all general attribute can be assigned here
+    if (roomReservation != null) {
+        data = GeneralMonitoringData(
+            statusText = statusText(roomReservation.status),
+            statusColor = statusColor(roomReservation.status),
+            reservationStartTime = roomReservation.reservation_start_time,
+            reservationEndTime = roomReservation.reservation_end_time,
+            note = roomReservation.note,
+            createdAt = roomReservation.created_at,
+            updatedAt = roomReservation.updated_at
+        )
+    }
+
+    if (itemReservation != null) {
+        data = GeneralMonitoringData(
+            statusText = statusText(itemReservation.status),
+            statusColor = statusColor(itemReservation.status),
+            reservationStartTime = itemReservation.reservation_start_time,
+            reservationEndTime = itemReservation.reservation_end_time,
+            note = itemReservation.note,
+            createdAt = itemReservation.created_at,
+            updatedAt = itemReservation.updated_at
+        )
+    }
 
     Card(
         onClick = { showBottomSheet = true },
@@ -60,29 +123,24 @@ fun ReservationCard(
         ) {
             Text(
                 text = if (isRoom)
-                    "Room: ${reservation.roomName}"
+                    "Room: ${roomReservation?.room?.name}"
                 else
-                    "Item: ${reservation.itemName}",
+                    "Item: ${itemReservation?.item?.name}",
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
             )
             Text(
-                text = "Status: ${reservation.status}",
+                text = "Status: ${data.statusText}" ,
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = when (reservation.status) {
-                        "approve" -> Green
-                        "pending" -> Yellow
-                        "decline" -> Red
-                        else -> Color.Gray // Default color, you can adjust this based on your needs
-                    }
+                    color = data.statusColor,
                 )
             )
             Text(
-                text = "Reservation Date: ${reservation.reservationDate}",
+                text = "Reservation Date: ${data.reservationStartTime}",
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp
@@ -98,13 +156,27 @@ fun ReservationCard(
             sheetState = bottomSheetState,
             containerColor = BiruMuda_Lightest,
         ) {
-            DetailBottomSheet(reservation, isRoom)
+            if(isRoom)
+                DetailBottomSheet(
+                    roomReservation = roomReservation,
+                    data = data,
+                    isRoom = true)
+            else
+                DetailBottomSheet(
+                    itemReservation = itemReservation,
+                    data = data,
+                    isRoom = false)
         }
     }
 }
 
 @Composable
-fun DetailBottomSheet(reservation: MonitoringData, isRoom: Boolean) { // nanti tambahin parameter nilai
+fun DetailBottomSheet(
+    roomReservation: RoomReservationData ?= null,
+    itemReservation: ItemReservationData ?= null,
+    data: GeneralMonitoringData,
+    isRoom: Boolean
+) {
     Column (
         modifier = Modifier
             .background(BiruMuda_Lightest)
@@ -130,8 +202,8 @@ fun DetailBottomSheet(reservation: MonitoringData, isRoom: Boolean) { // nanti t
             )
             Text(
                 text =
-                if (isRoom) "${reservation.roomCode} - ${reservation.roomName}"
-                else "${reservation.itemName}",
+                if (isRoom) "C602 - ${roomReservation?.room?.name}"
+                else "${itemReservation?.item?.name}",
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight(700),
@@ -147,9 +219,9 @@ fun DetailBottomSheet(reservation: MonitoringData, isRoom: Boolean) { // nanti t
                     .background(color = BiruMuda_Lighter)
             )
 
-            if (!isRoom) TheSection(title = "Quantity", body = "${reservation.qty} pcs")
+            if (!isRoom) TheSection(title = "Quantity", body = "${itemReservation?.quantity} pcs")
 
-            TheSection(title = "Date", body = reservation.reservationDate)
+            TheSection(title = "Date", body = "Mon, 23 November 2023")
             TheSection(title = "Time", body = "16.00 - 19.00")
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -159,23 +231,13 @@ fun DetailBottomSheet(reservation: MonitoringData, isRoom: Boolean) { // nanti t
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = when (reservation.status) {
-                            "approve" -> Green
-                            "pending" -> Yellow
-                            "decline" -> Red
-                            else -> Color.Gray
-                        }
+                        color = data.statusColor
                     )
                     .padding(0.dp, 8.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = when (reservation.status) {
-                        "approve" -> "Approved"
-                        "pending" -> "Pending"
-                        "decline" -> "Declined"
-                        else -> "Unknown"
-                    },
+                    text = data.statusText,
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(600),
