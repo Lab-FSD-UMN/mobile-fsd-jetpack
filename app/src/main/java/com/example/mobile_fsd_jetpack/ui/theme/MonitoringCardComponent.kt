@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -33,43 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.models.ItemReservationData
-import com.example.mobile_fsd_jetpack.models.Room
 import com.example.mobile_fsd_jetpack.models.RoomReservationData
-import com.example.mobile_fsd_jetpack.pages.MonitoringData
+import com.example.mobile_fsd_jetpack.pages.monitoring.DateTime
+import com.example.mobile_fsd_jetpack.pages.monitoring.GeneralMonitoringData
+import com.example.mobile_fsd_jetpack.pages.monitoring.formatDateTime
+import com.example.mobile_fsd_jetpack.pages.monitoring.formatStatus
 
 // Reference : https://developer.android.com/jetpack/compose/components/bottom-sheets
-
-class GeneralMonitoringData (
-    val statusText : String,
-    val statusColor: Color,
-    val reservationStartTime : String,
-    val reservationEndTime : String,
-    val note : String,
-    val createdAt : String,
-    val updatedAt : String,
-)
-
-fun statusText(status: Int) : String {
-    val formattedStatus = when (status) {
-        1 -> "Approved"
-        0 -> "Pending"
-        2 -> "Rejected"
-        else -> "-"
-    }
-
-    return formattedStatus
-}
-
-fun statusColor(status: Int) : Color {
-    val formattedStatus = when (status) {
-        1 -> Green
-        0 -> Yellow
-        2 -> Red
-        else -> Color.Gray
-    }
-
-    return formattedStatus
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,30 +52,24 @@ fun ReservationCard(
 
     // If itemReservation == null, then it is a room
     val isRoom: Boolean = itemReservation == null
-    var data: GeneralMonitoringData = GeneralMonitoringData("", Color.Gray, "", "", "", "", "")
+    var data = GeneralMonitoringData(formatStatus(55), DateTime("Monday", "16.00"),  DateTime("Monday", "18.00"), "")
 
     // all general attribute can be assigned here
     if (roomReservation != null) {
         data = GeneralMonitoringData(
-            statusText = statusText(roomReservation.status),
-            statusColor = statusColor(roomReservation.status),
-            reservationStartTime = roomReservation.reservation_start_time,
-            reservationEndTime = roomReservation.reservation_end_time,
+            status = formatStatus(roomReservation.status),
+            reservationStart = formatDateTime(roomReservation.reservation_start_time),
+            reservationEnd = formatDateTime(roomReservation.reservation_end_time),
             note = roomReservation.note,
-            createdAt = roomReservation.created_at,
-            updatedAt = roomReservation.updated_at
         )
     }
 
     if (itemReservation != null) {
         data = GeneralMonitoringData(
-            statusText = statusText(itemReservation.status),
-            statusColor = statusColor(itemReservation.status),
-            reservationStartTime = itemReservation.reservation_start_time,
-            reservationEndTime = itemReservation.reservation_end_time,
+            status = formatStatus(itemReservation.status),
+            reservationStart = formatDateTime(itemReservation.reservation_start_time),
+            reservationEnd = formatDateTime(itemReservation.reservation_end_time),
             note = itemReservation.note,
-            createdAt = itemReservation.created_at,
-            updatedAt = itemReservation.updated_at
         )
     }
 
@@ -132,15 +95,15 @@ fun ReservationCard(
                 )
             )
             Text(
-                text = "Status: ${data.statusText}" ,
+                text = "Status: ${data.status.text}" ,
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = data.statusColor,
+                    color = data.status.color,
                 )
             )
             Text(
-                text = "Reservation Date: ${data.reservationStartTime}",
+                text = "Reservation Date: ${data.reservationStart.date}",
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp
@@ -221,8 +184,8 @@ fun DetailBottomSheet(
 
             if (!isRoom) TheSection(title = "Quantity", body = "${itemReservation?.quantity} pcs")
 
-            TheSection(title = "Date", body = "Mon, 23 November 2023")
-            TheSection(title = "Time", body = "16.00 - 19.00")
+            TheSection(title = "Date", body = data.reservationStart.date)
+            TheSection(title = "Time", body = "${data.reservationStart.time} - ${data.reservationEnd.time}")
 
             Spacer(modifier = Modifier.height(5.dp))
             TheSection(title = "Description", body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
@@ -231,13 +194,13 @@ fun DetailBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = data.statusColor
+                        color = data.status.color
                     )
                     .padding(0.dp, 8.dp)
                     .align(Alignment.CenterHorizontally)
             ) {
                 Text(
-                    text = data.statusText,
+                    text = data.status.text,
                     style = TextStyle(
                         fontSize = 14.sp,
                         fontWeight = FontWeight(600),
