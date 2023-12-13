@@ -219,17 +219,10 @@ fun DetailBottomSheet(
 
             if (!isRoom) TheSection(title = "Quantity", body = "${itemReservation?.quantity} pcs")
 
-//<<<<<<< HEAD
             TheSection(title = "Date", body = data.reservationStart.date)
             TheSection(title = "Time", body = "${data.reservationStart.time} - ${data.reservationEnd.time}")
-//=======
-//            TheSection(title = "Date", body = "${data?.reservationStartTime}")
-////            TheSection(title = "Time", body = roomReservation!!.)
-//>>>>>>> 688984c3fec0924ca4caabb1b155c70940cdf605
 
             Spacer(modifier = Modifier.height(5.dp))
-//            roomReservation?.note?.let { TheSection(title = "Description", body = it) }
-
             TheSection(title = "Description", body = "${data?.note}")
 
             Box(
