@@ -31,6 +31,7 @@ import com.example.mobile_fsd_jetpack.api.response_model.room.GetSelfRoomReserva
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.RoomReservationData
 import com.example.mobile_fsd_jetpack.pages.MonitoringData
+import com.example.mobile_fsd_jetpack.ui.theme.ReservationCard
 import retrofit2.Callback
 import retrofit2.Call
 import retrofit2.Response
@@ -92,7 +93,8 @@ fun RoomReservationList(reservations : List<RoomReservationData?>) {
     ) {
         itemsIndexed(reservations) { _, reservation ->
             Log.d("items", reservation.toString())
-            RoomReservationCard(reservation)
+//            RoomReservationCard(reservation)
+            ReservationCard(roomReservation = reservation)
         }
     }
 }

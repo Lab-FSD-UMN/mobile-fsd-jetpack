@@ -44,7 +44,7 @@ class GeneralMonitoringData (
     val statusColor: Color,
     val reservationStartTime : String,
     val reservationEndTime : String,
-    val note : String,
+    val note : String?,
     val createdAt : String,
     val updatedAt : String,
 )
@@ -92,7 +92,7 @@ fun ReservationCard(
             statusColor = statusColor(roomReservation.status),
             reservationStartTime = roomReservation.reservation_start_time,
             reservationEndTime = roomReservation.reservation_end_time,
-            note = roomReservation.note,
+            note = roomReservation?.note,
             createdAt = roomReservation.created_at,
             updatedAt = roomReservation.updated_at
         )
@@ -104,7 +104,7 @@ fun ReservationCard(
             statusColor = statusColor(itemReservation.status),
             reservationStartTime = itemReservation.reservation_start_time,
             reservationEndTime = itemReservation.reservation_end_time,
-            note = itemReservation.note,
+            note = itemReservation?.note,
             createdAt = itemReservation.created_at,
             updatedAt = itemReservation.updated_at
         )
@@ -202,7 +202,7 @@ fun DetailBottomSheet(
             )
             Text(
                 text =
-                if (isRoom) "C602 - ${roomReservation?.room?.name}"
+                if (isRoom) "${roomReservation?.room?.location} - ${roomReservation?.room?.name}"
                 else "${itemReservation?.item?.name}",
                 style = TextStyle(
                     fontSize = 18.sp,
@@ -221,11 +221,13 @@ fun DetailBottomSheet(
 
             if (!isRoom) TheSection(title = "Quantity", body = "${itemReservation?.quantity} pcs")
 
-            TheSection(title = "Date", body = "Mon, 23 November 2023")
-            TheSection(title = "Time", body = "16.00 - 19.00")
+            TheSection(title = "Date", body = "${data?.reservationStartTime}")
+//            TheSection(title = "Time", body = roomReservation!!.)
 
             Spacer(modifier = Modifier.height(5.dp))
-            TheSection(title = "Description", body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+//            roomReservation?.note?.let { TheSection(title = "Description", body = it) }
+
+            TheSection(title = "Description", body = "${data?.note}")
 
             Box(
                 modifier = Modifier
