@@ -1,7 +1,7 @@
 package com.example.mobile_fsd_jetpack.models
 
 class RoomReservationData (
-    val id : Int,
+    val id : String,
     val room : Room,
     val quantity : Int,
     val status : Int,

@@ -1,7 +1,7 @@
 package com.example.mobile_fsd_jetpack.models
 
 class Room (
-    val id : Int,
+    val id : String,
     val image : String,
     val name : String,
     val is_available : Boolean,

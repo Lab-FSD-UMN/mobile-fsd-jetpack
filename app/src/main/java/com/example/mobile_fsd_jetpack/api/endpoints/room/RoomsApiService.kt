@@ -19,7 +19,7 @@ interface RoomsApiService {
         @Path("id") id : String?
     ) : Call<GetRoomByIDApiResponse>
 
-    @GET("user/reservation/room/request")
+    @GET("user/reservation/room/myreservations")
     fun getSelfReservation(
         @Header("Authorization") token: String,
         @Header("Accept") contentType : String = "application/json"
