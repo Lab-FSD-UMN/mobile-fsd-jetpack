@@ -31,6 +31,7 @@ import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 
+// nanti jangan lupa di delete
 data class MonitoringData (
     // ROOM
     val roomName: String? = null,
@@ -56,7 +57,7 @@ fun MonitoringScreen(navController: NavController? = null) {
             .fillMaxSize()
             .background(color = AlmostWhite)
             .wrapContentSize(Alignment.TopCenter)
-            .padding(20.dp)
+            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
     ) {
         Text(
             text = "My Reservations",
