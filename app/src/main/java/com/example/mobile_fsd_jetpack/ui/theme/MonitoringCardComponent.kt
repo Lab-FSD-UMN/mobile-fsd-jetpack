@@ -5,16 +5,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -279,12 +283,17 @@ fun NoReservation(navController: NavController) {
                     contentColor = AlmostWhite
                 )
         ) {
-            Text(
-                text = "Reserve Now",
-                style = MaterialTheme.typography.labelMedium,
-                fontSize = 18.sp,
+            Row(
                 modifier = Modifier.padding(24.dp, 5.dp)
-            )
+            ) {
+                Text(
+                    text = "Reserve Now",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(end = 12.dp)
+                )
+                Icon(Icons.Default.ArrowForward, contentDescription = "go")
+            }
         }
     }
 }
