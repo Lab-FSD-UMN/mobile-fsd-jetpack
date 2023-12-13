@@ -13,21 +13,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import com.example.mobile_fsd_jetpack.api.BaseAPIBuilder
 import com.example.mobile_fsd_jetpack.api.endpoints.item.ItemsApiService
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetSelfItemReservationApiResponse
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.ItemReservationData
+import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
 import com.example.mobile_fsd_jetpack.ui.theme.ReservationCard
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun ItemMonitoringScreen() {
+fun ItemMonitoringScreen(navController: NavController) {
 
     val context = LocalContext.current
     var itemReservations by remember { mutableStateOf<List<ItemReservationData?>>(emptyList()) }
+    var isAvailable : Boolean = false
 
     LaunchedEffect(Unit){
 
@@ -41,9 +44,14 @@ fun ItemMonitoringScreen() {
             override fun onResponse(call: Call<GetSelfItemReservationApiResponse>, response: Response<GetSelfItemReservationApiResponse>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    responseBody?.userReservation?.let { data ->
-                        itemReservations = data
+
+                    if (responseBody?.userReservation != null) {
+                        isAvailable = true
+
+                        responseBody?.userReservation?.let { data ->
+                            itemReservations = data
 //                        Log.d("CONSOLE", responseBody.toString())
+                        }
                     }
 
                 } else {
@@ -59,7 +67,8 @@ fun ItemMonitoringScreen() {
     }
 
     Column {
-        ItemReservationList(itemReservations)
+        if (isAvailable) ItemReservationList(itemReservations)
+        else if (!isAvailable) NoReservation(navController)
     }
 }
 

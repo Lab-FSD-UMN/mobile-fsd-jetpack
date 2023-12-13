@@ -13,21 +13,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import com.example.mobile_fsd_jetpack.api.BaseAPIBuilder
 import com.example.mobile_fsd_jetpack.api.endpoints.room.RoomsApiService
 import com.example.mobile_fsd_jetpack.api.response_model.room.GetSelfRoomReservationApiResponse
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.RoomReservationData
+import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
 import com.example.mobile_fsd_jetpack.ui.theme.ReservationCard
 import retrofit2.Callback
 import retrofit2.Call
 import retrofit2.Response
 
 @Composable
-fun RoomMonitoringScreen() {
+fun RoomMonitoringScreen(navController: NavController) {
 
     val context = LocalContext.current
     var roomReservations by remember { mutableStateOf<List<RoomReservationData?>>(emptyList()) }
+    var isAvailable : Boolean = false
 
     LaunchedEffect(Unit){
 
@@ -41,9 +44,13 @@ fun RoomMonitoringScreen() {
             override fun onResponse(call: Call<GetSelfRoomReservationApiResponse>, response: Response<GetSelfRoomReservationApiResponse>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-                    responseBody?.userReservation?.let { data ->
-                        roomReservations = data
-//                        Log.d("CONSOLE", data.toString())
+
+                    if (responseBody?.userReservation != null) {
+                        isAvailable = true
+                        responseBody?.userReservation?.let { data ->
+                            roomReservations = data
+                            // Log.d("CONSOLE", data.toString())
+                        }
                     }
 
                 } else {
@@ -59,7 +66,8 @@ fun RoomMonitoringScreen() {
     }
 
     Column {
-        RoomReservationList(roomReservations)
+        if (isAvailable) RoomReservationList(roomReservations)
+        else if (!isAvailable) NoReservation(navController)
     }
 }
 

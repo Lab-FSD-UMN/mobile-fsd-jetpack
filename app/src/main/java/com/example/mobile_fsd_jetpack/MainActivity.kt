@@ -134,7 +134,7 @@ fun BottomBar(
         val currentRoute = navBackStackEntry?.destination?.route
 
         Log.d("ROUTE", currentRoute.toString())
-        Log.d("ROUTE", getCategory(currentRoute.toString()).toString())
+//        Log.d("ROUTE", getCategory(currentRoute.toString()).toString())
 
         screens.forEach { screen ->
             val selected = currentRoute?.let { getCategory(it) } == screen.category

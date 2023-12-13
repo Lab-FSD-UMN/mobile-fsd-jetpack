@@ -31,27 +31,8 @@ import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 
-// nanti jangan lupa di delete
-data class MonitoringData (
-    // ROOM
-    val roomName: String? = null,
-    val roomCode: String? = null,
-
-    // ITEM
-    val itemName: String? = null,
-    val qty: Int? = null,
-
-    // GENERAL
-    val category: String,
-    val status: String,
-    val reservationDate: String,
-    val description: String? = null, // nanti dibikin jangan optional
-    // val image: ?????
-)
-
-
 @Composable
-fun MonitoringScreen(navController: NavController? = null) {
+fun MonitoringScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,12 +49,12 @@ fun MonitoringScreen(navController: NavController? = null) {
             )
         )
         Spacer(modifier = Modifier.height(20.dp))
-        TabScreen()
+        TabScreen(navController)
     }
 }
 
 @Composable
-fun TabScreen() {
+fun TabScreen(navController: NavController) {
     var tabIndex by remember { mutableIntStateOf(0) }
 
     val tabs = listOf("Room Reservation", "Item Reservation")
@@ -106,9 +87,8 @@ fun TabScreen() {
             }
         }
         when (tabIndex) {
-            0 -> RoomMonitoringScreen()
-            1 -> ItemMonitoringScreen()
-//            1 -> ItemMonitoringScreen()
+            0 -> RoomMonitoringScreen(navController)
+            1 -> ItemMonitoringScreen(navController)
         }
     }
 }
@@ -117,6 +97,6 @@ fun TabScreen() {
 @Composable
 fun MonitorPreview() {
     MobilefsdjetpackTheme {
-        MonitoringScreen()
+//        MonitoringScreen()
     }
 }

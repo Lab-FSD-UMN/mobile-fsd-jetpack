@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -23,60 +27,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.mobile_fsd_jetpack.BuildConfig
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.models.ItemReservationData
 import com.example.mobile_fsd_jetpack.models.RoomReservationData
+import com.example.mobile_fsd_jetpack.navigation.MainNavRoutes
 import com.example.mobile_fsd_jetpack.pages.monitoring.DateTime
 import com.example.mobile_fsd_jetpack.pages.monitoring.GeneralMonitoringData
 import com.example.mobile_fsd_jetpack.pages.monitoring.formatDateTime
 import com.example.mobile_fsd_jetpack.pages.monitoring.formatStatus
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 // Reference : https://developer.android.com/jetpack/compose/components/bottom-sheets
 
-//<<<<<<< HEAD
-//=======
-//class GeneralMonitoringData (
-//    val statusText : String,
-//    val statusColor: Color,
-//    val reservationStartTime : String,
-//    val reservationEndTime : String,
-//    val note : String?,
-//    val createdAt : String,
-//    val updatedAt : String,
-//)
-//
-//fun statusText(status: Int) : String {
-//    val formattedStatus = when (status) {
-//        1 -> "Approved"
-//        0 -> "Pending"
-//        2 -> "Rejected"
-//        else -> "-"
-//    }
-//
-//    return formattedStatus
-//}
-//
-//fun statusColor(status: Int) : Color {
-//    val formattedStatus = when (status) {
-//        1 -> Green
-//        0 -> Yellow
-//        2 -> Red
-//        else -> Color.Gray
-//    }
-//
-//    return formattedStatus
-//}
-//
-//>>>>>>> 688984c3fec0924ca4caabb1b155c70940cdf605
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservationCard(
@@ -123,9 +98,9 @@ fun ReservationCard(
         ) {
             Text(
                 text = if (isRoom)
-                    "Room: ${roomReservation?.room?.name}"
+                    "${roomReservation?.room?.location} - ${roomReservation?.room?.name}"
                 else
-                    "Item: ${itemReservation?.item?.name}",
+                    "${itemReservation?.item?.name}",
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
@@ -236,7 +211,7 @@ fun DetailBottomSheet(
             TheSection(title = "Time", body = "${data.reservationStart.time} - ${data.reservationEnd.time}")
 
             Spacer(modifier = Modifier.height(5.dp))
-            TheSection(title = "Description", body = "${data?.note}")
+            TheSection(title = "Description", body = "${data.note}")
 
             Box(
                 modifier = Modifier
@@ -258,6 +233,58 @@ fun DetailBottomSheet(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun NoReservation(navController: NavController) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 32.dp)
+    ){
+        Text(
+            text = "No reservations yet",
+            style = TextStyle(
+                fontSize = 28.sp,
+                fontWeight = FontWeight(700),
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+            )
+        )
+        Text(
+            text = "Make your first reservation",
+            style = TextStyle(
+                fontSize = 16.sp,
+                fontWeight = FontWeight(500),
+                color = Color(0x99000000),
+                textAlign = TextAlign.Center,
+            )
+        )
+        Image(
+            painter = painterResource(id = R.drawable.empty_box),
+            contentDescription = "empty reservation",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(0.dp, 30.dp)
+                .width(240.dp)
+        )
+        Button(
+            onClick = { navController.navigate(MainNavRoutes.Reservation.route) },
+            colors = ButtonDefaults
+                .buttonColors(
+                    containerColor = Color(0xFF006BBD),
+                    contentColor = AlmostWhite
+                )
+        ) {
+            Text(
+                text = "Reserve Now",
+                style = MaterialTheme.typography.labelMedium,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(24.dp, 5.dp)
+            )
         }
     }
 }
