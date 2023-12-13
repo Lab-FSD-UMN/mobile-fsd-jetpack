@@ -30,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
+import com.example.mobile_fsd_jetpack.BuildConfig
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.models.ItemReservationData
 import com.example.mobile_fsd_jetpack.models.RoomReservationData
@@ -175,6 +177,9 @@ fun DetailBottomSheet(
     data: GeneralMonitoringData,
     isRoom: Boolean
 ) {
+
+    val API_URL = BuildConfig.API_URL
+
     Column (
         modifier = Modifier
             .background(BiruMuda_Lightest)
@@ -190,7 +195,15 @@ fun DetailBottomSheet(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
-                painter = painterResource(id = R.drawable.lab1),
+                painter = rememberImagePainter(
+                    data =
+                        if (isRoom) "${API_URL}${roomReservation?.room?.image}"
+                        else "${API_URL}${itemReservation?.item?.image}",
+                    builder = {
+                        crossfade(true)
+                        placeholder(android.R.drawable.ic_menu_gallery)
+                    }
+                ),
                 contentDescription = "Reserved Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
