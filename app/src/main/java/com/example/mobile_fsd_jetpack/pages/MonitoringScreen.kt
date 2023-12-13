@@ -106,7 +106,7 @@ fun TabScreen() {
             }
         }
         when (tabIndex) {
-            0 -> ItemMonitoringScreen()
+            0 -> RoomMonitoringScreen()
             1 -> ItemMonitoringScreen()
 //            1 -> ItemMonitoringScreen()
         }

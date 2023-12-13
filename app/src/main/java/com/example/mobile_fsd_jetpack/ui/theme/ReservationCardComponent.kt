@@ -114,7 +114,7 @@ fun RoomCard(
                         .padding(12.dp, 3.dp)
                 ) {
                     Text(
-                        text = "B103", // location aslinya blm ada
+                        text = room.location, // location aslinya blm ada
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontWeight = FontWeight(700),
@@ -212,7 +212,7 @@ fun ItemCard(
                         .padding(12.dp, 3.dp)
                 ) {
                     Text(
-                        text = "${item.quantity}/${item.quantity}",
+                        text = "${item.reserved_qty}/${item.quantity}",
                         style = TextStyle(
                             fontSize = 10.sp,
                             fontWeight = FontWeight(700),

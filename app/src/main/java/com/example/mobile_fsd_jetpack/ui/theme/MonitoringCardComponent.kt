@@ -40,6 +40,41 @@ import com.example.mobile_fsd_jetpack.pages.monitoring.formatStatus
 
 // Reference : https://developer.android.com/jetpack/compose/components/bottom-sheets
 
+//<<<<<<< HEAD
+//=======
+//class GeneralMonitoringData (
+//    val statusText : String,
+//    val statusColor: Color,
+//    val reservationStartTime : String,
+//    val reservationEndTime : String,
+//    val note : String?,
+//    val createdAt : String,
+//    val updatedAt : String,
+//)
+//
+//fun statusText(status: Int) : String {
+//    val formattedStatus = when (status) {
+//        1 -> "Approved"
+//        0 -> "Pending"
+//        2 -> "Rejected"
+//        else -> "-"
+//    }
+//
+//    return formattedStatus
+//}
+//
+//fun statusColor(status: Int) : Color {
+//    val formattedStatus = when (status) {
+//        1 -> Green
+//        0 -> Yellow
+//        2 -> Red
+//        else -> Color.Gray
+//    }
+//
+//    return formattedStatus
+//}
+//
+//>>>>>>> 688984c3fec0924ca4caabb1b155c70940cdf605
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservationCard(
@@ -60,7 +95,7 @@ fun ReservationCard(
             status = formatStatus(roomReservation.status),
             reservationStart = formatDateTime(roomReservation.reservation_start_time),
             reservationEnd = formatDateTime(roomReservation.reservation_end_time),
-            note = roomReservation.note,
+            note = roomReservation.note
         )
     }
 
@@ -69,7 +104,7 @@ fun ReservationCard(
             status = formatStatus(itemReservation.status),
             reservationStart = formatDateTime(itemReservation.reservation_start_time),
             reservationEnd = formatDateTime(itemReservation.reservation_end_time),
-            note = itemReservation.note,
+            note = itemReservation.note
         )
     }
 
@@ -165,7 +200,7 @@ fun DetailBottomSheet(
             )
             Text(
                 text =
-                if (isRoom) "C602 - ${roomReservation?.room?.name}"
+                if (isRoom) "${roomReservation?.room?.location} - ${roomReservation?.room?.name}"
                 else "${itemReservation?.item?.name}",
                 style = TextStyle(
                     fontSize = 18.sp,
@@ -184,11 +219,18 @@ fun DetailBottomSheet(
 
             if (!isRoom) TheSection(title = "Quantity", body = "${itemReservation?.quantity} pcs")
 
+//<<<<<<< HEAD
             TheSection(title = "Date", body = data.reservationStart.date)
             TheSection(title = "Time", body = "${data.reservationStart.time} - ${data.reservationEnd.time}")
+//=======
+//            TheSection(title = "Date", body = "${data?.reservationStartTime}")
+////            TheSection(title = "Time", body = roomReservation!!.)
+//>>>>>>> 688984c3fec0924ca4caabb1b155c70940cdf605
 
             Spacer(modifier = Modifier.height(5.dp))
-            TheSection(title = "Description", body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+//            roomReservation?.note?.let { TheSection(title = "Description", body = it) }
+
+            TheSection(title = "Description", body = "${data?.note}")
 
             Box(
                 modifier = Modifier
