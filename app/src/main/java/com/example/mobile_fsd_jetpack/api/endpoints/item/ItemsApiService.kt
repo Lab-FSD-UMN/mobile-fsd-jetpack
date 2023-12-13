@@ -5,6 +5,7 @@ import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.api.response_model.ApiResponse
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemByIDApiResponse
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemsApiResponse
+import com.example.mobile_fsd_jetpack.api.response_model.item.GetSelfItemReservationApiResponse
 import com.example.mobile_fsd_jetpack.api.response_model.room.GetRoomByIDApiResponse
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -29,4 +30,10 @@ interface ItemsApiService {
         @Header("Authorization") token: String,
         @Body requestBody: ItemReservation
     ) : Call<ApiResponse>
+
+    @GET("user/reservation/request")
+    fun getSelfReservation(
+        @Header("Authorization") token: String,
+        @Header("Accept") contentType : String = "application/json"
+    ) : Call<GetSelfItemReservationApiResponse>
 }

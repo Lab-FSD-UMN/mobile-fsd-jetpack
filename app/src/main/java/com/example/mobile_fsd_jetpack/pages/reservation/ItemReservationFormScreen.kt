@@ -365,10 +365,10 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                             call.enqueue(object : Callback<ApiResponse> {
                                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                                     val responseBody = response.body()
-//                                    Log.d("bid", responseBody.toString())
+                                    Log.d("bid", responseBody.toString())
                                     modalData = ApiResponse(
-                                        status = responseBody?.status ?: 400,
-                                        message = responseBody?.message ?: "Failed to reserve item."
+                                        status = responseBody?.status,
+                                        message = responseBody?.message
                                         // masih gagal klo buat response 400, ntah knp kalo 201 slalu bs kebaca statusny
                                         // slain itu null trs
                                     )
@@ -398,8 +398,8 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
 
         if (modalData != null){
             ShowDialog(
-                status = modalData!!.status,
-                message = modalData!!.message,
+                status = modalData?.status,
+                message = modalData?.message,
                 onDismiss = { modalData = null }
             )
         }
@@ -407,12 +407,12 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
 }
 
 @Composable
-fun ShowDialog(status : Int, message: String, onDismiss: () -> Unit) {
+fun ShowDialog(status : Int?, message: String?, onDismiss: () -> Unit) {
     val title = if (status == 201) "Success" else "Fail"
     AlertDialog(
         onDismissRequest = { onDismiss() },
         title = { Text(text = title) },
-        text = { Text(text = message) },
+        text = { Text(text = message ?: "-") },
         buttons = {
             Button(
                 onClick = { onDismiss() }

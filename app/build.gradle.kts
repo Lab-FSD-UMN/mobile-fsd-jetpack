@@ -13,7 +13,7 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-        buildConfigField("String", "API_URL", "\"https://f04e-2001-448a-2042-3e13-c09d-df38-af2e-f0c3.ngrok-free.app\"")
+        buildConfigField("String", "API_URL", "\"https://b0c0-2001-448a-2042-3e13-bc6f-48ed-67ea-f3ff.ngrok-free.app\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -62,6 +62,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("androidx.compose.ui:ui-tooling-preview")
