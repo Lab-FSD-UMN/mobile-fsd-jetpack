@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +20,7 @@ import com.example.mobile_fsd_jetpack.api.endpoints.item.ItemsApiService
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetSelfItemReservationApiResponse
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.ItemReservationData
+import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
 import com.example.mobile_fsd_jetpack.ui.theme.ReservationCard
 import retrofit2.Call
@@ -30,7 +32,7 @@ fun ItemMonitoringScreen(navController: NavController) {
 
     val context = LocalContext.current
     var itemReservations by remember { mutableStateOf<List<ItemReservationData?>>(emptyList()) }
-    var isAvailable : Boolean = false
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit){
 
@@ -45,30 +47,34 @@ fun ItemMonitoringScreen(navController: NavController) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
 
-                    if (responseBody?.userReservation != null) {
-                        isAvailable = true
-
-                        responseBody?.userReservation?.let { data ->
-                            itemReservations = data
+                    responseBody?.userReservation?.let { data ->
+                        itemReservations = data
 //                        Log.d("CONSOLE", responseBody.toString())
-                        }
                     }
 
                 } else {
 //                    Log.w("e", response.message())
                 }
+
+                isLoading = false
+                // nanti mungkin bisa tambahin error handler disini
             }
 
             override fun onFailure(call: Call<GetSelfItemReservationApiResponse>, t: Throwable) {
                 Log.d("onFailure", t.message.toString())
+
+                isLoading = false
             }
         })
 //        Log.d("items", itemReservations.toString())
     }
 
     Column {
-        if (isAvailable) ItemReservationList(itemReservations)
-        else if (!isAvailable) NoReservation(navController)
+        when {
+            isLoading -> LoadingScreen()
+            itemReservations.isNotEmpty() -> ItemReservationList(itemReservations)
+            else -> NoReservation(navController)
+        }
     }
 }
 

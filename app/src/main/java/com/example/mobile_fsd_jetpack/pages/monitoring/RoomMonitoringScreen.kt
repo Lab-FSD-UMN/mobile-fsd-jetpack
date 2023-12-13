@@ -10,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +20,7 @@ import com.example.mobile_fsd_jetpack.api.endpoints.room.RoomsApiService
 import com.example.mobile_fsd_jetpack.api.response_model.room.GetSelfRoomReservationApiResponse
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.RoomReservationData
+import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
 import com.example.mobile_fsd_jetpack.ui.theme.ReservationCard
 import retrofit2.Callback
@@ -30,7 +32,7 @@ fun RoomMonitoringScreen(navController: NavController) {
 
     val context = LocalContext.current
     var roomReservations by remember { mutableStateOf<List<RoomReservationData?>>(emptyList()) }
-    var isAvailable : Boolean = false
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit){
 
@@ -45,29 +47,34 @@ fun RoomMonitoringScreen(navController: NavController) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
 
-                    if (responseBody?.userReservation != null) {
-                        isAvailable = true
-                        responseBody?.userReservation?.let { data ->
-                            roomReservations = data
-                            // Log.d("CONSOLE", data.toString())
-                        }
+                    responseBody?.userReservation?.let { data ->
+                        roomReservations = data
+//                        Log.d("CONSOLE", responseBody.toString())
                     }
 
                 } else {
 //                    Log.w("e", response.message())
                 }
+
+                isLoading = false
             }
 
             override fun onFailure(call: Call<GetSelfRoomReservationApiResponse>, t: Throwable) {
                 Log.d("onFailure", t.message.toString())
+
+                isLoading = false
+                // nanti mungkin bisa tambahin error handler disini
             }
         })
 //        Log.d("items", roomReservations.toString())
     }
 
     Column {
-        if (isAvailable) RoomReservationList(roomReservations)
-        else if (!isAvailable) NoReservation(navController)
+        when {
+            isLoading -> LoadingScreen()
+            roomReservations.isNotEmpty() -> RoomReservationList(roomReservations)
+            else -> NoReservation(navController)
+        }
     }
 }
 
