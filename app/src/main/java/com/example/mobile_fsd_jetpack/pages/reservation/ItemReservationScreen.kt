@@ -197,7 +197,7 @@ fun ItemReservationScreen(navController: NavController?= null) {
                         onValueChange = { searchText = it },
                         placeholder = {
                             Text(
-                                text = "Search a lab room...",
+                                text = "Search item...",
                             )
                         },
                         keyboardOptions = KeyboardOptions.Default.copy(
