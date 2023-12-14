@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,15 +58,22 @@ import com.example.mobile_fsd_jetpack.auth.UserAuth
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.example.mobile_fsd_jetpack.navigation.MainNavRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.BasicDialog
 
 @Composable
 fun ReservationScreen(navController: NavController?= null) {
-
     val context = LocalContext.current;
     val name : String? = UserAuth(context).getNama();
 
     var showDialog by remember { mutableStateOf(false) }
+
+    DisposableEffect(showDialog) {
+        onDispose {
+
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -73,8 +81,9 @@ fun ReservationScreen(navController: NavController?= null) {
         if(showDialog) {
             BasicDialog(
                 onDismiss = { showDialog = false },
+                onDismissClickOutside = true,
                 title = "Credit",
-                buttonText = "Ok",
+                buttonText = "OK",
                 content = {
                     Column{
                         Text(text = "Aurelius Ivan Wijaya (00000054769)")

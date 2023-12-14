@@ -247,6 +247,7 @@ fun SearchBar(placeholder: String, searchText: String, onSearchTextChanged: (Str
 @Composable
 fun BasicDialog(
     onDismiss: () -> Unit,
+    onDismissClickOutside: Boolean,
     title: String,
     buttonText: String,
     content: @Composable () -> Unit = { DefaultDialogContent() }
@@ -254,7 +255,7 @@ fun BasicDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
-            dismissOnClickOutside = true,
+            dismissOnClickOutside = onDismissClickOutside,
             dismissOnBackPress = false,
         ),
         title = { Text(title) },

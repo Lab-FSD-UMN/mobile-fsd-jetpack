@@ -35,6 +35,11 @@ fun NavigationGraph(navController: NavHostController) {
         composable(MainNavRoutes.Monitoring.route) {
             MonitoringScreen(navController = navController)
         }
+//        // yang gaa biasa (:) tapi buat nyambung ke lainnya masih error
+//        composable("${MainNavRoutes.Monitoring.route}/{tabIndex}") { backStackEntry ->
+//            val tabIndex = backStackEntry.arguments?.getString("tabIndex")?.toIntOrNull()
+//            MonitoringScreen(navController = navController, tabIndex ?: 0)
+//        }
         composable(MainNavRoutes.Profile.route) {
             ProfileScreen(navController = navController)
         }
