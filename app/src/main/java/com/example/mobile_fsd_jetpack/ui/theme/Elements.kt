@@ -13,13 +13,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +44,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 
 @Composable
@@ -235,4 +240,40 @@ fun SearchBar(placeholder: String, searchText: String, onSearchTextChanged: (Str
                 shape = RoundedCornerShape(size = 12.dp),
             )
     )
+}
+
+
+// DIALOG
+@Composable
+fun BasicDialog(
+    onDismiss: () -> Unit,
+    title: String,
+    buttonText: String,
+    content: @Composable () -> Unit = { DefaultDialogContent() }
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnClickOutside = true,
+            dismissOnBackPress = false,
+        ),
+        title = { Text(title) },
+        text = { content() },
+        confirmButton = {
+            TextButton(
+                text = buttonText,
+                textColor = BiruMuda,
+                bgColor = BiruMuda_Lightest,
+                onClick = onDismiss
+            )
+        },
+        containerColor = AlmostWhite,
+        titleContentColor = BiruUMN,
+        textContentColor = BiruMuda,
+    )
+}
+
+@Composable
+fun DefaultDialogContent() {
+    Text(text = "This is a dialog")
 }

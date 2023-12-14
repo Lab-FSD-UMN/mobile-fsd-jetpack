@@ -44,7 +44,6 @@ import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.models.Room
 
 // JANGAN LUPA BIKIN VERSI UNAVAILABLE (gabisa dipencet nanti)
-// nanti tambahin parameter gambar, nama, kode kelas, apa lagi??
 @Composable
 fun RoomCard(
     navController: NavController ?= null,

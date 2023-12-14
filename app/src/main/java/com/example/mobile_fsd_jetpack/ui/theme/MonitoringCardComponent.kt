@@ -119,7 +119,7 @@ fun ReservationCard(
                 )
             )
             Text(
-                text = "Reservation Date: ${data.reservationStart.date}",
+                text = "${data.reservationStart.date} • ${data.reservationStart.time} - ${data.reservationEnd.time}",
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp

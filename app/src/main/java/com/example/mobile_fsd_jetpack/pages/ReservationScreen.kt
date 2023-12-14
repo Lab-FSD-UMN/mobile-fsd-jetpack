@@ -3,6 +3,7 @@ package com.example.mobile_fsd_jetpack.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +16,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,61 +55,86 @@ import com.example.mobile_fsd_jetpack.ui.theme.ButtonImage
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.example.mobile_fsd_jetpack.ui.theme.BasicDialog
 
 @Composable
 fun ReservationScreen(navController: NavController?= null) {
 
     val context = LocalContext.current;
-
     val name : String? = UserAuth(context).getNama();
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = AlmostWhite)
-            .wrapContentSize(Alignment.TopCenter)
-    ) {
-        Header(name);
-        Image(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(8f / 1f),
-            painter = painterResource(id = R.drawable.super_graphic),
-            contentDescription = "Super Graphic"
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        ButtonImage(
-            text = "Room Reservation",
-            image = R.drawable.room_reservation,
-            onClick = {},
-            route = ReservationRoutes.RoomReservation.route,
-            navController = navController,
-            imageRatio = 56f/27f,
-            modifier = Modifier
-                .padding(20.dp, 0.dp)
-                .fillMaxWidth()
-                .aspectRatio(56f / 27f)
-        )
+    var showDialog by remember { mutableStateOf(false) }
 
-        Spacer(modifier = Modifier.height(20.dp))
-        ButtonImage(
-            text = "Item Reservation",
-            image = R.drawable.room_reservation,
-            onClick = {},
-            route = ReservationRoutes.ItemReservation.route,
-            navController = navController,
-            imageRatio = 56f/27f,
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        if(showDialog) {
+            BasicDialog(
+                onDismiss = { showDialog = false },
+                title = "Credit",
+                buttonText = "Ok",
+                content = {
+                    Column{
+                        Text(text = "Aurelius Ivan Wijaya (00000054769)")
+                        Text(text = "Farrel Dinarta (00000055702)")
+                        Text(text = "Maecyntha Irelynn Tantra (00000055038)")
+                        Text(text = "Prudence Tendy (00000060765)")
+                    }
+                }
+            )
+        }
+
+        Column (
             modifier = Modifier
-                .padding(20.dp, 0.dp)
-                .fillMaxWidth()
-                .aspectRatio(56f / 27f)
-        )
+                .fillMaxSize()
+                .background(color = AlmostWhite)
+                .wrapContentSize(Alignment.TopCenter)
+        ) {
+            Header(name, onDialogButtonClick = { showDialog = true })
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(8f / 1f),
+                painter = painterResource(id = R.drawable.super_graphic),
+                contentDescription = "Super Graphic"
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            ButtonImage(
+                text = "Room Reservation",
+                image = R.drawable.room_reservation,
+                onClick = {},
+                route = ReservationRoutes.RoomReservation.route,
+                navController = navController,
+                imageRatio = 56f/27f,
+                modifier = Modifier
+                    .padding(20.dp, 0.dp)
+                    .fillMaxWidth()
+                    .aspectRatio(56f / 27f)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+            ButtonImage(
+                text = "Item Reservation",
+                image = R.drawable.room_reservation,
+                onClick = {},
+                route = ReservationRoutes.ItemReservation.route,
+                navController = navController,
+                imageRatio = 56f/27f,
+                modifier = Modifier
+                    .padding(20.dp, 0.dp)
+                    .fillMaxWidth()
+                    .aspectRatio(56f / 27f)
+            )
+        }
+
     }
 }
 
 // HEADER
 @Composable
-fun Header(name : String?) {
+fun Header(name : String?, onDialogButtonClick: () -> Unit) {
     Box (
         modifier = Modifier
             .fillMaxWidth()
@@ -160,6 +195,7 @@ fun Header(name : String?) {
                             color = Color(0x99D3F2FF),
                             shape = RoundedCornerShape(size = 100.dp)
                         )
+                        .clickable { onDialogButtonClick() }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.question_mark_icon),
