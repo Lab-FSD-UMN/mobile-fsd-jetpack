@@ -2,6 +2,8 @@ package com.example.mobile_fsd_jetpack.ui.theme
 
 import android.content.Context
 import android.graphics.ColorMatrixColorFilter
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -58,10 +60,15 @@ fun RoomCard(
             .height(150.dp)
             .clip(RoundedCornerShape(4.dp))
             .clickable {
-                if (!room.is_available) {
+                Log.d("RoomCard", "RoomCard: ${room.image}")
+                if (room.is_available) {
                     route?.let { route ->
                         navController?.navigate(route)
                     }
+                }
+                else{
+                    // pop a toast
+                    Toast.makeText(context, "Sorry! Room is unavailable", Toast.LENGTH_SHORT).show()
                 }
             }
     ) {
@@ -93,7 +100,6 @@ fun RoomCard(
                 }
             }
         }
-
 
 
         room.image?.let { imageUrl ->
