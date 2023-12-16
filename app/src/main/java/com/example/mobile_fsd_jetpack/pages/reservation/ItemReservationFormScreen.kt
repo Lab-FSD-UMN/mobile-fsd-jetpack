@@ -385,16 +385,16 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
 
             BasicDialog(
                 onDismiss = {
-                    modalData = null
-                    navController?.navigate(MainNavRoutes.Monitoring.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                    if (modalData?.status == 201) {
+                        navController?.navigate(MainNavRoutes.Monitoring.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
-                    // biar kalo mau langsung ke tab item, tp navigasi ke yg lain jadi error :) jadi nantian aja
-                    // navController?.navigate("${MainNavRoutes.Monitoring.route}/1")
+                    modalData = null
                 },
                 onDismissClickOutside = false ,
                 title = title,
