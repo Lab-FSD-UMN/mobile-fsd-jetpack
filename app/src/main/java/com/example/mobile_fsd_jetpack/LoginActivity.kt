@@ -89,6 +89,8 @@ class LoginActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onBackPressed() {}
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
