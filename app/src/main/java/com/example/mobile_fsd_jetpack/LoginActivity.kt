@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -132,14 +133,28 @@ fun LoginForm(navController : NavController, context : Context) {
             onClick = {
                 if (email.isNotEmpty() && password.isNotEmpty()) {
                     println("Email: $email, Password: $password")
-                    val login = UserAuth(context).login(email, password, object : LoginCallback {
+                    val login = UserAuth(context).login(email, password
+                        , object : LoginCallback {
                         override fun onLoginSuccess() {
-                            Log.d("Success", "Success")
-                            navController.navigate("mainActivity")
+//                            navController.navigate("mainActivity")
+//                            Log.d("Success", "Success")
+//                            Toast.makeText(context, "Login Success", Toast.LENGTH_SHORT).show()
+                            val nim = "123456789"
+                            if (nim != null) {
+                                navController.navigate("mainActivity")
+                                Log.d("Success", "Success")
+                                Toast.makeText(context, "Login Success", Toast.LENGTH_SHORT).show()
+                            } else {
+                                // Handle the case where nim is null
+                                Log.e("Error", "nim is null")
+                                Toast.makeText(context, "Login Failed: nim is null", Toast.LENGTH_SHORT).show()
+                            }
                         }
 
                         override fun onLoginFailure() {
+//                            navController.navigate("mainActivity")
                             Log.d("Fail", "Fail")
+                            Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
                         }
                     })
 

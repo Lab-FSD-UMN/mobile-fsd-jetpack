@@ -30,7 +30,8 @@ class UserAuth(context: Context) : Auth(context){
                         setToken(responseBody!!.token); // dri API
                         setProfile(
                             responseBody!!.user.name,
-                            responseBody!!.user.nim,
+//                            responseBody!!.user.nim,
+                            1234567890.toString(),
                             responseBody!!.user.email
                         );
                         callback.onLoginSuccess()

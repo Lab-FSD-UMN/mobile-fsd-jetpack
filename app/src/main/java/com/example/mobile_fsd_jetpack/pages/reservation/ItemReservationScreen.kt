@@ -37,7 +37,6 @@ import retrofit2.Response
 
 @Composable
 fun ItemReservationScreen(navController: NavController?= null) {
-
     val context = LocalContext.current
 
     var items by remember { mutableStateOf<List<Item>>(emptyList()) }
