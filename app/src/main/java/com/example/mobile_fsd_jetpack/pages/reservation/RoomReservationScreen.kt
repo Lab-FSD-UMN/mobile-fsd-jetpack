@@ -64,12 +64,10 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                                 rooms = roomList
                                 allRooms = roomList
                     }
-
                 } else {
                     Log.d("e", response.message())
                 }
             }
-
             override fun onFailure(call: Call<GetRoomsApiResponse>, t: Throwable) {
                 Log.d("onFailure", t.message.toString())
             }

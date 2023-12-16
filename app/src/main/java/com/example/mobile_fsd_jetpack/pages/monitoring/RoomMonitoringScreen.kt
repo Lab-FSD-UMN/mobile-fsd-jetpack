@@ -44,24 +44,18 @@ fun RoomMonitoringScreen(navController: NavController) {
         val call = getItemsApiService.getSelfReservation("Bearer $userToken")
         call.enqueue(object : Callback<GetSelfRoomReservationApiResponse> {
             override fun onResponse(call: Call<GetSelfRoomReservationApiResponse>, response: Response<GetSelfRoomReservationApiResponse>) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-
-                    responseBody?.userReservation?.let { data ->
-                        roomReservations = data
-//                        Log.d("CONSOLE", responseBody.toString())
-                    }
-
-                } else {
-//                    Log.w("e", response.message())
+                Log.d("message", response.body()?.message.toString())
+//                Log.d("data", response.body()?.data.
+                var data = response.body()?.data
+                if (data != null) {
+                    Log.d("data", data[0].toString())
+                    roomReservations = data
                 }
-
                 isLoading = false
             }
 
             override fun onFailure(call: Call<GetSelfRoomReservationApiResponse>, t: Throwable) {
                 Log.d("onFailure", t.message.toString())
-
                 isLoading = false
                 // nanti mungkin bisa tambahin error handler disini
             }
