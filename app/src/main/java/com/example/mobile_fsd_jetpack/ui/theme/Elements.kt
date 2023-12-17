@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -99,7 +100,6 @@ fun ButtonImage(
     onClick: () -> Unit,
     navController: NavController ?= null,
     route: String ?= null,
-    imageRatio: Float ?= null,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -109,11 +109,9 @@ fun ButtonImage(
             painter = painterResource(id = image),
             contentDescription = "Room Reservation",
             modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(imageRatio!!)
-                .clip(RoundedCornerShape(8.dp))
-                .scale(1f, 1f)
-//                     .contentScale(ContentScale.Crop)
+                .fillMaxSize()
+                .clip(RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop
         )
 
         Column(

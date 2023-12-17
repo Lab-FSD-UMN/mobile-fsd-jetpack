@@ -55,12 +55,6 @@ fun ReservationScreen(navController: NavController?= null) {
 
     var showDialog by remember { mutableStateOf(false) }
 
-    DisposableEffect(showDialog) {
-        onDispose {
-
-        }
-    }
-
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -95,35 +89,36 @@ fun ReservationScreen(navController: NavController?= null) {
                 painter = painterResource(id = R.drawable.super_graphic),
                 contentDescription = "Super Graphic"
             )
-            Spacer(modifier = Modifier.height(20.dp))
-            ButtonImage(
-                text = "Room Reservation",
-                image = R.drawable.room_reservation,
-                onClick = {},
-                route = ReservationRoutes.RoomReservation.route,
-                navController = navController,
-                imageRatio = 56f/27f,
+            Column (
+                verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
-                    .padding(20.dp, 0.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(56f / 27f)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-            ButtonImage(
-                text = "Item Reservation",
-                image = R.drawable.room_reservation,
-                onClick = {},
-                route = ReservationRoutes.ItemReservation.route,
-                navController = navController,
-                imageRatio = 56f/27f,
-                modifier = Modifier
-                    .padding(20.dp, 0.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(56f / 27f)
-            )
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
+                ButtonImage(
+                    text = "Room Reservation",
+                    image = R.drawable.room_reservation,
+                    onClick = {},
+                    route = ReservationRoutes.RoomReservation.route,
+                    navController = navController,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+//                        .height(140.dp)
+                )
+                ButtonImage(
+                    text = "Item Reservation",
+                    image = R.drawable.room_reservation,
+                    onClick = {},
+                    route = ReservationRoutes.ItemReservation.route,
+                    navController = navController,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+//                        .height(140.dp)
+                )
+            }
         }
-
     }
 }
 
