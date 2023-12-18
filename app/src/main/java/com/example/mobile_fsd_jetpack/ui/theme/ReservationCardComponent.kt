@@ -230,9 +230,10 @@ fun ItemCard(
         }
 
         item.image?.let { imageUrl ->
+            val processedUrl = imageUrl.replace("public/", "storage/")
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data("${API_URL}${imageUrl}")
+                    .data("${API_URL}/${processedUrl}")
                     .crossfade(true)
                     .build(),
                 placeholder = ColorPainter(Color.Transparent),

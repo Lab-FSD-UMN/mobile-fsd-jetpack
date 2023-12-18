@@ -160,9 +160,58 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
             .wrapContentSize(Alignment.TopCenter)
     ) {
         PageHeading("Item Reservation Form", navController)
+//<<<<<<< HEAD
         when {
             isLoading -> LoadingScreen()
             else ->
+//=======
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(20.dp)
+//                .wrapContentSize(Alignment.TopCenter)
+//                .verticalScroll(rememberScrollState())
+//        ) {
+//            item?.let {
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(150.dp)
+//                        .background(
+//                            color = MaterialTheme.colorScheme.surface,
+//                            shape = MaterialTheme.shapes.medium
+//                        )
+//                        .padding(16.dp)
+//                ) {
+//
+//                    val processedUrl = item!!.image.replace("public/", "storage/")
+//
+//                    Image(
+//                        painter = rememberImagePainter(
+//                            data = "${API_URL}/${processedUrl}",
+//                            builder = {
+//                                crossfade(true)
+//                                placeholder(android.R.drawable.ic_menu_gallery)
+//                            }
+//                        ),
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier
+//                            .fillMaxHeight()
+//                            .aspectRatio(1f)
+//                    )
+//                    Text(
+//                        text = it.name,
+//                        modifier = Modifier
+//                            .padding(start = 16.dp)
+//                            .padding(16.dp)
+//                    )
+//                }
+//
+//
+//                Spacer(modifier = Modifier.height(16.dp))
+//
+//>>>>>>> b5bd7d8e41bc3e1eea5f4b5d42ac569731d3eac3
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
