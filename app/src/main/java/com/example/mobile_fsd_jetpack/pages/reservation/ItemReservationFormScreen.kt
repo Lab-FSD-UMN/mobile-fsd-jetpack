@@ -172,7 +172,7 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                         .padding(16.dp)
                 ) {
 
-                    val processedUrl = item!!.image.replace("public/", "storage/")
+                    val processedUrl = item?.image?.replace("public/", "storage/") ?: ""
 
                     Image(
                         painter = rememberImagePainter(

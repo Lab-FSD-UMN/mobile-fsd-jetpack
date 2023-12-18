@@ -297,7 +297,7 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
                                 .background(MaterialTheme.colorScheme.surface)
                                 .clickable {
                                     showTimePickerDialog(context) { selectedHour, selectedMinute ->
-                                        startTime = "Start Time : $selectedHour:$selectedMinute"
+                                        startTime = "$selectedHour:$selectedMinute"
                                     }
                                 }
                         ) {
@@ -324,7 +324,7 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
                                 .background(MaterialTheme.colorScheme.surface)
                                 .clickable {
                                     showTimePickerDialog(context) { selectedHour, selectedMinute ->
-                                        endTime = "End Time : $selectedHour:$selectedMinute"
+                                        endTime = "$selectedHour:$selectedMinute"
                                     }
                                 }
                         ) {
@@ -374,6 +374,7 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
                             isSubmitting = true
                             // POST the reservation
                             Log.d("date", selectedStartDate)
+                            Log.d("end", selectedEndDate)
                             Log.d("start_time", startTime)
                             Log.d("end_time", endTime)
                             Log.d("description", textInput)
@@ -383,8 +384,8 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
                                 room_id = id.toString(),
                                 reservation_date_start = selectedStartDate,
                                 reservation_date_end = selectedEndDate,
-                                reservation_time_end = "12:30",
-                                reservation_time_start = "11:30",
+                                reservation_time_end = "$startTime:00",
+                                reservation_time_start = "$endTime:00",
                                 note = textInput    // description
                             )
 
