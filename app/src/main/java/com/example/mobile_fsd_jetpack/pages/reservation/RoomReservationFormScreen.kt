@@ -506,8 +506,8 @@ fun RoomReservationFormScreen(
                                 room_id = id.toString(),
                                 reservation_date_start = selectedStartDate,
                                 reservation_date_end = selectedEndDate,
-                                reservation_time_end = "$startTime:00",
-                                reservation_time_start = "$endTime:00",
+                                reservation_time_end = startTime,
+                                reservation_time_start = endTime,
                                 note = textInput    // description
                             )
 
