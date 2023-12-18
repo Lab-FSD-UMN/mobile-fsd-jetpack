@@ -169,63 +169,9 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
             .wrapContentSize(Alignment.TopCenter)
     ) {
         PageHeading("Room Reservation Form", navController)
-//<<<<<<< HEAD
         when {
             isLoading -> LoadingScreen()
             else ->
-//=======
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(20.dp)
-//                .wrapContentSize(Alignment.TopCenter)
-//                .verticalScroll(rememberScrollState())
-//        ) {
-//            room?.let {
-//
-//                Row {
-//                    Text(
-//                        text = it.name,
-//                        modifier = Modifier
-//                            .padding(start = 16.dp)
-//                            .padding(16.dp)
-//                            .background(Color.Transparent)
-//                    )
-//                }
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-////                        .height(150.dp)
-//                        .aspectRatio(1f)
-//                        .fillMaxHeight()
-//                        .background(
-//                            color = MaterialTheme.colorScheme.surface,
-//                            shape = MaterialTheme.shapes.medium
-//                        )
-//                        .padding(16.dp)
-//                ) {
-//
-//                    it.image?.let { imageUrl ->
-//                        Log.d("imageUrl", "${API_URL}/${imageUrl}")
-//                        AsyncImage(
-//                            model = ImageRequest.Builder(context)
-//                                .data("${API_URL}/${imageUrl}")
-//                                .crossfade(true)
-//                                .build(),
-//                            placeholder = ColorPainter(Color.Transparent),
-//                            contentDescription = stringResource(R.string.item_description, it.name),
-//                            contentScale = ContentScale.Crop,
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .aspectRatio(1f)
-//                        )
-//                    }
-//                }
-//
-//
-//                Spacer(modifier = Modifier.height(16.dp))
-
-//>>>>>>> b5bd7d8e41bc3e1eea5f4b5d42ac569731d3eac3
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -241,13 +187,13 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
                                 modifier = Modifier
                                     .padding(start = 16.dp)
                                     .padding(16.dp)
-                                    .background(Color.Black)
+                                    .background(Color.Transparent)
                             )
                         }
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-//                        .height(150.dp)
+        //                        .height(150.dp)
                                 .aspectRatio(1f)
                                 .fillMaxHeight()
                                 .background(
@@ -273,7 +219,6 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
                                 )
                             }
                         }
-
 
                         Spacer(modifier = Modifier.height(16.dp))
 

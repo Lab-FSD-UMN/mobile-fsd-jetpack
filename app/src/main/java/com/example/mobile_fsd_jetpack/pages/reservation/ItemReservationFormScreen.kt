@@ -160,58 +160,9 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
             .wrapContentSize(Alignment.TopCenter)
     ) {
         PageHeading("Item Reservation Form", navController)
-//<<<<<<< HEAD
         when {
             isLoading -> LoadingScreen()
             else ->
-//=======
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(20.dp)
-//                .wrapContentSize(Alignment.TopCenter)
-//                .verticalScroll(rememberScrollState())
-//        ) {
-//            item?.let {
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(150.dp)
-//                        .background(
-//                            color = MaterialTheme.colorScheme.surface,
-//                            shape = MaterialTheme.shapes.medium
-//                        )
-//                        .padding(16.dp)
-//                ) {
-//
-//                    val processedUrl = item!!.image.replace("public/", "storage/")
-//
-//                    Image(
-//                        painter = rememberImagePainter(
-//                            data = "${API_URL}/${processedUrl}",
-//                            builder = {
-//                                crossfade(true)
-//                                placeholder(android.R.drawable.ic_menu_gallery)
-//                            }
-//                        ),
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .fillMaxHeight()
-//                            .aspectRatio(1f)
-//                    )
-//                    Text(
-//                        text = it.name,
-//                        modifier = Modifier
-//                            .padding(start = 16.dp)
-//                            .padding(16.dp)
-//                    )
-//                }
-//
-//
-//                Spacer(modifier = Modifier.height(16.dp))
-//
-//>>>>>>> b5bd7d8e41bc3e1eea5f4b5d42ac569731d3eac3
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -231,9 +182,11 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                                 .padding(16.dp)
                         ) {
 
+                            val processedUrl = item!!.image.replace("public/", "storage/")
+
                             Image(
                                 painter = rememberImagePainter(
-                                    data = "${API_URL}${it.image}",
+                                    data = "${API_URL}/${processedUrl}",
                                     builder = {
                                         crossfade(true)
                                         placeholder(android.R.drawable.ic_menu_gallery)
@@ -253,7 +206,6 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                             )
                         }
 
-
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Column(
@@ -265,7 +217,7 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                                     color = MaterialTheme.colorScheme.surface,
                                     shape = MaterialTheme.shapes.medium
                                 )
-                        ){
+                        ) {
                             var selectedDate by remember { mutableStateOf("Select Date") }
                             var startTime by remember { mutableStateOf("Select Start Time") }
                             var endTime by remember { mutableStateOf("Select End Time") }
@@ -406,7 +358,10 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                                     )
 
                                     call.enqueue(object : Callback<ApiResponse> {
-                                        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                                        override fun onResponse(
+                                            call: Call<ApiResponse>,
+                                            response: Response<ApiResponse>
+                                        ) {
                                             val responseBody = response.body()
                                             Log.d("bid", responseBody.toString())
                                             modalData = ApiResponse(
@@ -417,7 +372,10 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                                             )
                                         }
 
-                                        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                                        override fun onFailure(
+                                            call: Call<ApiResponse>,
+                                            t: Throwable
+                                        ) {
                                             modalData = ApiResponse(
                                                 status = 500,
                                                 message = "Failed to process your reservation."
