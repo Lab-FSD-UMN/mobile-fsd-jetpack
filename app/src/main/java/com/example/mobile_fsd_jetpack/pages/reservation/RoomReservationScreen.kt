@@ -51,8 +51,6 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
     var allRooms by remember { mutableStateOf<List<Room>>(emptyList()) }
     var searchText by remember { mutableStateOf("") }
 
-    var isLoading by remember { mutableStateOf(true) }
-
     val retrofit = BaseAPIBuilder().retrofit
     val getRoomsApiService = retrofit.create(RoomsApiService::class.java)
 
@@ -70,8 +68,8 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                     Log.d("t", responseBody.toString())
                     responseBody?.data?.rooms?.let {
                             roomList ->
-                                rooms = roomList
-                                allRooms = roomList
+                        rooms = roomList
+                        allRooms = roomList
                     }
                 } else {
                     Log.d("e", response.message())
