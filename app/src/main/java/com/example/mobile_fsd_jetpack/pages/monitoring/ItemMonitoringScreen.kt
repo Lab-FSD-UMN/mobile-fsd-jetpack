@@ -22,6 +22,8 @@ import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.ItemReservationData
 import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellDisplay
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellTypes
 import com.example.mobile_fsd_jetpack.ui.theme.ReservationCard
 import retrofit2.Call
 import retrofit2.Callback
@@ -73,7 +75,7 @@ fun ItemMonitoringScreen(navController: NavController) {
         when {
             isLoading -> LoadingScreen()
             itemReservations.isNotEmpty() -> ItemReservationList(itemReservations)
-            else -> NoReservation(navController)
+            else -> NotGoingWellDisplay(navController = navController, type = NotGoingWellTypes.NoReservation)
         }
     }
 }

@@ -1,10 +1,8 @@
 package com.example.mobile_fsd_jetpack.ui.theme
 
 import android.content.Context
-import android.graphics.ColorMatrixColorFilter
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,12 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,10 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -52,7 +42,6 @@ import com.example.mobile_fsd_jetpack.BuildConfig
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.models.Room
-import com.example.mobile_fsd_jetpack.navigation.MainNavRoutes
 
 // JANGAN LUPA BIKIN VERSI UNAVAILABLE (gabisa dipencet nanti)
 @Composable
@@ -314,42 +303,5 @@ fun ItemCard(
                 )
             )
         }
-    }
-}
-
-@Composable
-fun NoList() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 32.dp)
-    ){
-        Text(
-            text = "Empty List",
-            style = TextStyle(
-                fontSize = 28.sp,
-                fontWeight = FontWeight(700),
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-            )
-        )
-        Text(
-            text = "Try another keyword",
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight(500),
-                color = Color(0x99000000),
-                textAlign = TextAlign.Center,
-            )
-        )
-        Image(
-            painter = painterResource(id = R.drawable.empty_box),
-            contentDescription = "empty reservation",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .padding(0.dp, 30.dp)
-                .width(240.dp)
-        )
     }
 }

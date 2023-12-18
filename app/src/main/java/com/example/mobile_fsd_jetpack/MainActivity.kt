@@ -76,14 +76,14 @@ class MainActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier.padding(paddingValues)
                     ) {
-                        if (!UserAuth(context).authenticated()){
-                            val intent = Intent(context, LoginActivity::class.java)
-                            context.startActivity(intent)
-                        }
-                        else {
+//                        if (!UserAuth(context).authenticated()){
+//                            val intent = Intent(context, LoginActivity::class.java)
+//                            context.startActivity(intent)
+//                        }
+//                        else {
                         NavigationGraph(navController = mainNavController)
 //                            ReservationNavigationGraph(navController = reservationNavController)
-                        }
+//                        }
                     }
                 }
             }
