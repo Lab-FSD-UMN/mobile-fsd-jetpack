@@ -172,9 +172,11 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                         .padding(16.dp)
                 ) {
 
+                    val processedUrl = item!!.image.replace("public/", "storage/")
+
                     Image(
                         painter = rememberImagePainter(
-                            data = "${API_URL}${it.image}",
+                            data = "${API_URL}/${processedUrl}",
                             builder = {
                                 crossfade(true)
                                 placeholder(android.R.drawable.ic_menu_gallery)

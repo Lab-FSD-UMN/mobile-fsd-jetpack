@@ -188,7 +188,7 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .padding(16.dp)
-                            .background(Color.Black)
+                            .background(Color.Transparent)
                     )
                 }
                 Row(
