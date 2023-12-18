@@ -5,6 +5,8 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,17 +23,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,15 +46,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.mobile_fsd_jetpack.BuildConfig.API_URL
@@ -61,7 +77,10 @@ import com.example.mobile_fsd_jetpack.api.response_model.room.GetRoomByIDApiResp
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.Room
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
-import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
+
+import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
+import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
+
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import retrofit2.Call
 import retrofit2.Callback
@@ -77,21 +96,27 @@ private fun formatDate(year: Int, month: Int, day: Int): String {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     return dateFormat.format(calendar.time)
 }
+
 private fun showTimePickerDialog(context: Context, onTimeSet: (hour: Int, minute: Int) -> Unit) {
     val calendar = Calendar.getInstance()
+    // Get the current hour, minute, and second
     val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
     val currentMinute = calendar.get(Calendar.MINUTE)
+    val currentSecond = calendar.get(Calendar.SECOND)
 
     val timePickerDialog = TimePickerDialog(
         context,
-        { _, hourOfDay, minute -> onTimeSet(hourOfDay, minute) },
+        { _, hourOfDay, minute ->
+            onTimeSet(hourOfDay, minute)
+        },
         currentHour,
         currentMinute,
-        false
+        true // Set this to true to display the second picker
     )
 
     timePickerDialog.show()
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 private fun showDatePickerDialog(context: Context, onDateSet: (selectedDate: String) -> Unit) {
@@ -100,24 +125,23 @@ private fun showDatePickerDialog(context: Context, onDateSet: (selectedDate: Str
     val currentMonth = calendar.get(Calendar.MONTH)
     val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
 
-
     DatePickerDialog(
-        context,
-        { _, year, month, day ->
+        context, { _, year, month, day ->
             val selectedDate = formatDate(year, month, day)
             onDateSet(selectedDate)
-        },
-        currentYear,
-        currentMonth,
-        currentDay
+        }, currentYear, currentMonth, currentDay
     ).show()
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoomReservationFormScreen(navController: NavController? = null, id: String?, imageUrl : String?) {
+fun RoomReservationFormScreen(
+    navController: NavController? = null, id: String?, imageUrl: String?
+) {
     val context = LocalContext.current
+
+    val userToken = UserAuth(context).getToken()
 
     var room by remember { mutableStateOf<Room?>(null) }
     var roomIsNotFound: Boolean = false
@@ -131,14 +155,15 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
     var isSubmitting by remember { mutableStateOf(false) }
     var isSubmitted by remember { mutableStateOf(false) }
 
-    var isLoading by remember { mutableStateOf(true) }
+    LaunchedEffect(id) {
+        if (id != null) {
 
-    LaunchedEffect(id){
-        if (id != null){
             val call = getRoomsApiService.getRoomById(id)
 
             call.enqueue(object : Callback<GetRoomByIDApiResponse> {
-                override fun onResponse(call: Call<GetRoomByIDApiResponse>, response: Response<GetRoomByIDApiResponse>) {
+                override fun onResponse(
+                    call: Call<GetRoomByIDApiResponse>, response: Response<GetRoomByIDApiResponse>
+                ) {
                     if (response.isSuccessful) {
                         Log.d("t", response.toString())
                         val responseBody = response.body()
@@ -169,319 +194,417 @@ fun RoomReservationFormScreen(navController: NavController? = null, id: String?,
             .wrapContentSize(Alignment.TopCenter)
     ) {
         PageHeading("Room Reservation Form", navController)
-        when {
-            isLoading -> LoadingScreen()
-            else ->
-                Column(
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .wrapContentSize(Alignment.TopCenter)
+                .verticalScroll(rememberScrollState())
+
+        ) {
+            room?.let {
+
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp)
-                        .wrapContentSize(Alignment.TopCenter)
-                        .verticalScroll(rememberScrollState())
+                        .height(150.dp) // Adjust the height as needed
+                        .background(
+                            color = Color.White, shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(5.dp)
                 ) {
-                    room?.let {
-
-                        Row {
-                            Text(
-                                text = it.name,
-                                modifier = Modifier
-                                    .padding(start = 16.dp)
-                                    .padding(16.dp)
-                                    .background(Color.Transparent)
+                    Row(
+                        modifier = Modifier
+                            .background(
+                                color = Color.White, shape = RoundedCornerShape(8.dp)
                             )
-                        }
-                        Row(
+                            .fillMaxSize()
+                    ) {
+
+
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-        //                        .height(150.dp)
-                                .aspectRatio(1f)
                                 .fillMaxHeight()
-                                .background(
-                                    color = MaterialTheme.colorScheme.surface,
-                                    shape = MaterialTheme.shapes.medium
-                                )
                                 .padding(16.dp)
+                                .weight(1f)
                         ) {
-
                             it.image?.let { imageUrl ->
                                 Log.d("imageUrl", "${API_URL}/${imageUrl}")
                                 AsyncImage(
                                     model = ImageRequest.Builder(context)
-                                        .data("${API_URL}/${imageUrl}")
-                                        .crossfade(true)
-                                        .build(),
+                                        .data("${API_URL}/${imageUrl}").crossfade(true).build(),
                                     placeholder = ColorPainter(Color.Transparent),
-                                    contentDescription = stringResource(R.string.item_description, it.name),
+                                    contentDescription = stringResource(
+                                        R.string.item_description, it.name
+                                    ),
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .fillMaxSize()
-                                        .aspectRatio(1f)
+                                        .fillMaxWidth()
+                                        .background(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = Color.Transparent
+                                        )
+                                        .clip(shape = RoundedCornerShape(8.dp)) // Apply the clip to round the corners
+
                                 )
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
 
-                        Column(
+                        Text(
+                            text = "${it.location} - ${it.name}",
+                            color = BiruUMN,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.surface)
                                 .padding(16.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.surface,
-                                    shape = MaterialTheme.shapes.medium
-                                )
-                        ){
-                            var selectedStartDate by remember { mutableStateOf("Select Start Date") }
-                            var selectedEndDate by remember { mutableStateOf("Select End Date") }
-                            var startTime by remember { mutableStateOf("Select Start Time") }
-                            var endTime by remember { mutableStateOf("Select End Time") }
+                                .align(Alignment.CenterVertically)
+                                .wrapContentSize(Alignment.Center)
+                                .weight(0.8f),
+                            style = TextStyle(fontSize = 18.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+                            textAlign = TextAlign.Center
+                        )
 
-                            Row {
-                                BasicTextField(
-                                    value = selectedStartDate,
-                                    onValueChange = {
-                                        selectedStartDate = it
-                                    },
-                                    modifier = Modifier
-                                        // 50% width
-                                        .weight(1f)
-                                        .height(50.dp)
-                                        .clickable {
-                                            showDatePickerDialog(context) { selectedDateString ->
-                                                selectedStartDate = selectedDateString
-                                            }
-                                        }
-                                        .height(50.dp)
-                                        .background(MaterialTheme.colorScheme.surface)
-                                        .border(1.dp, Color.Black),
-                                    enabled = false
-                                )
-                                BasicTextField(
-                                    value = selectedEndDate,
-                                    onValueChange = {
-                                        selectedEndDate = it
-                                    },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(50.dp)
+                    }
+                }
 
-                                        .clickable {
-                                            showDatePickerDialog(context) { selectedDateString ->
-                                                selectedEndDate = selectedDateString
-                                            }
-                                        }
-                                        .height(50.dp)
-                                        .background(MaterialTheme.colorScheme.surface)
-                                        .border(1.dp, Color.Black),
-                                    enabled = false
-                                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(0.dp)
+                        .background(
+                            color = Color.White, shape = RoundedCornerShape(8.dp)
+                        )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .padding(16.dp)
+                            .background(
+                                color = Color.White, shape = RoundedCornerShape(8.dp)
+                            )
+                    ) {
+                        var selectedStartDate by remember { mutableStateOf("dd / mm  / yyyy") }
+                        var selectedEndDate by remember { mutableStateOf("dd / mm  / yyyy") }
+                        var startTime by remember { mutableStateOf("Select Start Time") }
+                        var endTime by remember { mutableStateOf("Select End Time") }
+                        var textInput by remember { mutableStateOf("Description") }
 
+                        Text(
+                            style = TextStyle(fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+                            text = "Date Start",
+                            color = Color.Black,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                        OutlinedTextField(value = selectedStartDate, onValueChange = {
+                            selectedStartDate = it
+                        }, modifier = Modifier
+                            // 50% width
+                            .clickable {
+                                showDatePickerDialog(context) { selectedDateString ->
+                                    selectedStartDate = selectedDateString
+                                }
                             }
+                            .border(
+                                1.dp, Color.Gray.copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .fillMaxWidth(),
+                            enabled = false,
+                            textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
+                        )
+
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            style = TextStyle(fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+                            text = "Date End",
+                            color = Color.Black,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                        OutlinedTextField(value = selectedEndDate, onValueChange = {
+                            selectedEndDate = it
+                        }, modifier = Modifier
+                            // 50% width
+                            .clickable {
+                                showDatePickerDialog(context) { selectedDateString ->
+                                    selectedEndDate = selectedDateString
+                                }
+                            }
+                            .border(
+                                1.dp, Color.Gray.copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .fillMaxWidth(),
+                            enabled = false,
+                            textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
+
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+
+                        Text(
+                            style = TextStyle(fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+                            text = "Time Start",
+                            color = Color.Black,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                        OutlinedTextField(
+                            value = startTime,
+                            onValueChange = { startTime = it },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                            ),
+                            modifier = Modifier
+                                .border(
+                                    1.dp, Color.Gray.copy(alpha = 0.5f),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .clickable {
+                                    showTimePickerDialog(context) { selectedHour, selectedMinute ->
+                                        val formattedTime = String.format("%02d:%02d:00", selectedHour, selectedMinute)
+                                        startTime = formattedTime
+                                    }
+                                }
+                                .fillMaxWidth(),
+                            textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
+                            enabled = false
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+
+                        Text(
+                            style = TextStyle(fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+
+                            text = "Time End",
+                            color = Color.Black,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                        OutlinedTextField(
+                            value = endTime,
+                            onValueChange = { endTime = it },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
+                            ),
+                            modifier = Modifier
+                                .border(
+                                    1.dp, Color.Gray.copy(alpha = 0.5f),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .clickable {
+                                    showTimePickerDialog(context) { selectedHour, selectedMinute ->
+                                        val formattedTime = String.format("%02d:%02d:00", selectedHour, selectedMinute)
+                                        endTime = formattedTime
+                                    }
+                                }
+                                .fillMaxWidth(),
+                            textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
+                            enabled = false
+                        )
+
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            Row(
+
+                        Text(
+                            style = TextStyle(fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+
+                            text = "Description (Purpose)",
+                            color = Color.Black,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+
+                        OutlinedTextField(
+                            value = textInput,
+                            onValueChange = { textInput = it },
+//                            label = { Text("Description (Purpose)") },
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
+                            modifier = Modifier.fillMaxWidth(),
+                            // change text color to black
+                            textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
+                        )
+
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Button(
+                            onClick = {
+                                // Validate input
+                                if (selectedEndDate == "dd / mm  / yyyy" || selectedStartDate == "dd / mm  / yyyy" || startTime == "Select Start Time" || endTime == "Select End Time" || textInput.isBlank()) {
+                                    // Show an error message or toast to inform the user to fill in all fields.
+                                    Toast.makeText(
+                                        context, "Please fill in all fields", Toast.LENGTH_SHORT
+                                    ).show()
+                                    return@Button
+                                }
+
+                                isSubmitting = true
+                                // POST the reservation
+                                Log.d("start date", selectedStartDate)
+                                Log.d("end date", selectedEndDate)
+                                Log.d("start_time", startTime)
+                                Log.d("end_time", endTime)
+                                Log.d("description", textInput)
+
+                                val body = RoomReservation(
+                                    room_id = id.toString(),
+                                    reservation_date_start = selectedStartDate,
+                                    reservation_date_end = selectedEndDate,
+                                    reservation_time_start = startTime,
+                                    reservation_time_end = endTime,
+                                    note = textInput    // description
+                                )
+
+                                val call = getRoomsApiService.reserveRoom(
+                                    "Bearer $userToken", body
+                                )
+
+                                call.enqueue(object : Callback<ApiResponse> {
+                                    override fun onResponse(
+                                        call: Call<ApiResponse>, response: Response<ApiResponse>
+                                    ) {
+                                        Log.d("message", response.code().toString())
+                                        val responseBody = response.body()
+                                        //log request body
+                                        modalData = ApiResponse(
+                                            status = responseBody?.status,
+                                            message = responseBody?.message,
+                                            data = responseBody?.data,
+                                            error = responseBody?.error
+                                        )
+                                        isSubmitting = false    // hide the loading dialog
+                                        isSubmitted = true
+                                    }
+
+
+                                    override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                                        Log.d("onFailure", t.message.toString())
+                                        modalData = ApiResponse(
+                                            status = 500,
+                                            message = "Failed to process your reservation."
+                                        )
+                                    }
+                                })
+
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                BiruUMN
+                            ),
+                        ) {
+                            Text(
+                                text = "Submit",
+                                color = Color.White,
+                            )
+                        }
+
+                        // Add an AlertDialog for loading
+                        if (isSubmitting) {
+                            AlertDialog(
+                                onDismissRequest = { isSubmitting = false },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .wrapContentSize(Alignment.Center)
                             ) {
-                                Box(
+                                CircularProgressIndicator(
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .height(50.dp)
-                                        .border(1.dp, Color.Black)
-                                        .padding(8.dp)
-                                        .background(MaterialTheme.colorScheme.surface)
-                                        .clickable {
-                                            showTimePickerDialog(context) { selectedHour, selectedMinute ->
-                                                startTime = "Start Time : $selectedHour:$selectedMinute"
-                                            }
-                                        }
-                                ) {
-                                    BasicTextField(
-                                        value = startTime,
-                                        onValueChange = { startTime = it },
-                                        singleLine = true,
-                                        keyboardOptions = KeyboardOptions.Default.copy(
-                                            keyboardType = KeyboardType.Text,
-                                            imeAction = ImeAction.Done
-                                        ),
-                                        modifier = Modifier.fillMaxSize(),
-                                        enabled = false
-                                    )
-                                }
-                                Spacer(modifier = Modifier.width(16.dp))
-
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(50.dp)
-                                        .border(1.dp, Color.Black)
-                                        .padding(8.dp)
-                                        .background(MaterialTheme.colorScheme.surface)
-                                        .clickable {
-                                            showTimePickerDialog(context) { selectedHour, selectedMinute ->
-                                                endTime = "End Time : $selectedHour:$selectedMinute"
-                                            }
-                                        }
-                                ) {
-                                    BasicTextField(
-                                        value = endTime,
-                                        onValueChange = { endTime = it },
-                                        singleLine = true,
-                                        keyboardOptions = KeyboardOptions.Default.copy(
-                                            keyboardType = KeyboardType.Text,
-                                            imeAction = ImeAction.Done
-                                        ),
-                                        modifier = Modifier.fillMaxSize(),
-                                        enabled = false
-                                    )
-                                }
-
+                                        .size(50.dp)
+                                        .wrapContentSize(Alignment.Center)
+                                )
                             }
+                        }
 
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            var textInput by remember { mutableStateOf("") }
-
-                            OutlinedTextField(
-                                value = textInput,
-                                onValueChange = { textInput = it },
-                                label = { Text("Description (Purpose)") },
-                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Button(
-                                onClick = {
-                                    // Validate input
-                                    if (selectedEndDate == "Select End Date" ||
-                                        selectedStartDate == "Select Start Date" ||
-                                        startTime == "Select Start Time" ||
-                                        endTime == "Select End Time" ||
-                                        textInput.isBlank()) {
-                                        // Show an error message or toast to inform the user to fill in all fields.
-                                        Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-                                        return@Button
-                                    }
-
-
-                                    isSubmitting = true
-                                    // POST the reservation
-                                    Log.d("date", selectedStartDate)
-                                    Log.d("start_time", startTime)
-                                    Log.d("end_time", endTime)
-                                    Log.d("description", textInput)
-
-                                    val userToken = UserAuth(context).getToken()
-                                    val body = RoomReservation(
-                                        room_id = id.toString(),
-                                        reservation_date_start = selectedStartDate,
-                                        reservation_date_end = selectedEndDate,
-                                        reservation_time_end = "12:30",
-                                        reservation_time_start = "11:30",
-                                        note = textInput    // description
-                                    )
-
-                                    val call = getRoomsApiService.reserveRoom(
-                                        "Bearer ${userToken}",
-                                        body
-                                    )
-
-
-                                    call.enqueue(object : Callback<ApiResponse> {
-                                        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                                            val responseBody = response.body()
-
-                                            //log request body
-                                            Log.d("request", call.request().body.toString())
-
-                                            Log.d("request", call.request().body.toString())
-                                            Log.d("message", responseBody?.message.toString())
-                                            Log.d("error", response.body()?.error.toString())
-                                            Log.d("status", responseBody?.status.toString())
-                                            modalData = ApiResponse(
-                                                status = responseBody?.status,
-                                                message = responseBody?.message,
-                                                data = responseBody?.data,
-                                                error = responseBody?.error
-                                            )
-
-                                            // Show Alert Dialog
-//                                    Toast.makeText(context, responseBody?.message, Toast.LENGTH_SHORT).show()
-                                            isSubmitting = false    // hide the loading dialog
-                                            isSubmitted = true
-                                            // navigating back to the previous screen
-//                                    navController?.popBackStack()
-                                        }
-
-                                        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                                            Log.d("onFailure", t.message.toString())
-                                            modalData = ApiResponse(
-                                                status = 500,
-                                                message = "Failed to process your reservation."
-                                            )
-                                        }
-
-                                    })
-
-                                },
+                        if (isSubmitted) {
+                            AlertDialog(
+                                onDismissRequest = { isSubmitted = false },
                                 modifier = Modifier
+                                    .padding(10.dp)
                                     .fillMaxWidth()
-                                    .height(56.dp)
-                                // make it semi transparent if the form is not valid
+                                    .wrapContentSize(Alignment.Center)
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(8.dp)),
                             ) {
-                                Text("Submit")
-                            }
-
-
-                            // Add an AlertDialog for loading
-                            if (isSubmitting) {
-                                AlertDialog(
-                                    onDismissRequest = { isSubmitting = false },
+                                Column (
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .wrapContentSize(Alignment.Center)
-                                ) {
-                                    CircularProgressIndicator(
+                                        .padding(16.dp)
+                                ){
+                                    Text(
+                                        text = modalData?.message.toString(),
+                                        color = Color.Black,
+                                        style = TextStyle(fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
                                         modifier = Modifier
-                                            .size(50.dp)
+                                            .fillMaxWidth()
                                             .wrapContentSize(Alignment.Center)
                                     )
-                                }
-                            }
-
-                            if(isSubmitted)
-                            {
-                                AlertDialog(
-                                    onDismissRequest = { isSubmitted = false },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentSize(Alignment.Center)
-                                        .background(Color.White)
-                                ) {
-                                    Column {
-                                        Text("Reservation Submitted")
-                                        Button(onClick = {
-                                            isSubmitted = false
-                                            navController?.popBackStack()
-                                        }) {
-                                            Text("OK")
-                                        }
+                                    Button(onClick = {
+                                        isSubmitted = false
+                                        navController?.popBackStack()
+                                    }) {
+                                        Text("OK")
                                     }
                                 }
                             }
                         }
                     }
                 }
+            } ?: run {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .wrapContentSize(Alignment.Center)
+                )
+            }
+
         }
     }
 }
 
+
 @Composable
-fun RoomReservationFormScreenPreview() {
-    RoomReservationFormScreen(id = "1", imageUrl = "${API_URL}/storage/room/room1.jpg")
+fun TextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier.padding(8.dp)
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
+        modifier = modifier
+    )
 }
+
+
+//@OptIn(ExperimentalCoilApi::class)
+//@Composable
+//@Preview
+//fun RoomReservationFormScreenPreview() {
+//    RoomReservationFormScreen(
+//        id = "1",
+//        imageUrl = "${API_URL}/storage/room/room1.jpg")
+//}

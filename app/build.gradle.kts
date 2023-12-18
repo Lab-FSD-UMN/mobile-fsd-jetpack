@@ -8,11 +8,11 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.mobile_fsd_jetpack"
+        applicationId = "com.labfsd.mobile_fsd_jetpack"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.1"
         buildConfigField("String", "API_URL", "\"https://fsd.renara.biz.id\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -166,6 +166,7 @@ fun LoginForm(navController : NavController, context : Context) {
                     )
                 }
 
+
                 // Password Field
                 Column(
                     horizontalAlignment = Alignment.Start,
@@ -268,6 +269,7 @@ fun LoginForm(navController : NavController, context : Context) {
                                             .show()
                                     }
                                 })
+
 
                         }
 
