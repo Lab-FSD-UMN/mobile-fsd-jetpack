@@ -27,8 +27,11 @@ import com.example.mobile_fsd_jetpack.api.endpoints.item.ItemsApiService
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemsApiResponse
 import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
+import com.example.mobile_fsd_jetpack.pages.monitoring.ItemReservationList
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.ItemCard
+import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
+import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import com.example.mobile_fsd_jetpack.ui.theme.SearchBar
 import retrofit2.Call
@@ -42,6 +45,8 @@ fun ItemReservationScreen(navController: NavController?= null) {
     var items by remember { mutableStateOf<List<Item>>(emptyList()) }
     var allItems by remember { mutableStateOf<List<Item>>(emptyList()) }
     var searchText by remember { mutableStateOf("") }
+
+    var isLoading by remember { mutableStateOf(true) }
 
     val retrofit = BaseAPIBuilder().retrofit
     val getItemsApiService = retrofit.create(ItemsApiService::class.java)
@@ -62,10 +67,14 @@ fun ItemReservationScreen(navController: NavController?= null) {
                 } else {
                     Log.d("e", response.message())
                 }
+
+                isLoading = false
             }
 
             override fun onFailure(call: Call<GetItemsApiResponse>, t: Throwable) {
                 Log.d("onFailure", t.message.toString())
+
+                isLoading = false
             }
         })
     }
@@ -100,25 +109,28 @@ fun ItemReservationScreen(navController: NavController?= null) {
                 }
             )
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxSize()
+            when {
+                isLoading -> LoadingScreen()
+                allItems.isNotEmpty() ->
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
 //                    .verticalScroll(rememberScrollState())
-            ) {
-                items(items) { item ->
-                    ItemCard(
-                        route = "${ReservationRoutes.ItemReservationForm.route}/${item.id}",
-                        navController = navController,
-                        context = context,
-                        item = item,
-                    )
-                }
+                    ) {
+                        items(items) { item ->
+                            ItemCard(
+                                route = "${ReservationRoutes.ItemReservationForm.route}/${item.id}",
+                                navController = navController,
+                                context = context,
+                                item = item,
+                            )
+                        }
+                    }
+                else -> LoadingScreen()
             }
-
         }
-
     }
 }

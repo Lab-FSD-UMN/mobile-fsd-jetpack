@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -104,18 +103,16 @@ fun ReservationScreen(navController: NavController?= null) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-//                        .height(140.dp)
                 )
                 ButtonImage(
                     text = "Item Reservation",
-                    image = R.drawable.room_reservation,
+                    image = R.drawable.item_reservation,
                     onClick = {},
                     route = ReservationRoutes.ItemReservation.route,
                     navController = navController,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-//                        .height(140.dp)
                 )
             }
         }

@@ -128,7 +128,7 @@ fun ButtonImage(
         ) {
             Text(
                 text = text,
-                fontSize = 20.sp,
+                fontSize = 22.sp,
                 color = Color.White
             )
         }
