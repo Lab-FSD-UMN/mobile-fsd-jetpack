@@ -1,7 +1,6 @@
 package com.example.mobile_fsd_jetpack.ui.theme
 
 import android.content.Context
-import android.graphics.ColorMatrixColorFilter
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -27,7 +26,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -232,9 +230,10 @@ fun ItemCard(
         }
 
         item.image?.let { imageUrl ->
+            val processedUrl = imageUrl.replace("public/", "storage/")
             AsyncImage(
                 model = ImageRequest.Builder(context)
-                    .data("${API_URL}${imageUrl}")
+                    .data("${API_URL}/${processedUrl}")
                     .crossfade(true)
                     .build(),
                 placeholder = ColorPainter(Color.Transparent),

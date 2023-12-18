@@ -10,7 +10,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,17 +29,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -53,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
@@ -61,29 +57,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.example.mobile_fsd_jetpack.BuildConfig.API_URL
 import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.api.BaseAPIBuilder
 import com.example.mobile_fsd_jetpack.api.endpoints.room.RoomsApiService
-import com.example.mobile_fsd_jetpack.api.request_body.item.ItemReservation
 import com.example.mobile_fsd_jetpack.api.request_body.room.RoomReservation
 import com.example.mobile_fsd_jetpack.api.response_model.ApiResponse
 import com.example.mobile_fsd_jetpack.api.response_model.room.GetRoomByIDApiResponse
-import com.example.mobile_fsd_jetpack.api.response_model.room.GetRoomsApiResponse
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.Room
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
+
 import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
+
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import retrofit2.Call
 import retrofit2.Callback
@@ -160,6 +157,7 @@ fun RoomReservationFormScreen(
 
     LaunchedEffect(id) {
         if (id != null) {
+
             val call = getRoomsApiService.getRoomById(id)
 
             call.enqueue(object : Callback<GetRoomByIDApiResponse> {
@@ -175,10 +173,14 @@ fun RoomReservationFormScreen(
                     } else {
                         Log.d("e", response.message())
                     }
+
+                    isLoading = false
                 }
 
                 override fun onFailure(call: Call<GetRoomByIDApiResponse>, t: Throwable) {
                     Log.d("onFailure", t.message.toString())
+
+                    isLoading = false
                 }
             })
         }
@@ -417,6 +419,9 @@ fun RoomReservationFormScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
 
+                            Spacer(modifier = Modifier.height(16.dp))
+
+
                         Text(
                             style = TextStyle(fontSize = 16.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
 
@@ -487,6 +492,7 @@ fun RoomReservationFormScreen(
                                         isSubmitting = false    // hide the loading dialog
                                         isSubmitted = true
                                     }
+
 
                                     override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                                         Log.d("onFailure", t.message.toString())
@@ -571,6 +577,7 @@ fun RoomReservationFormScreen(
                         .wrapContentSize(Alignment.Center)
                 )
             }
+
         }
     }
 }

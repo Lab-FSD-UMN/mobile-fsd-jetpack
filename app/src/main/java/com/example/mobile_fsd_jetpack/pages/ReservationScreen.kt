@@ -16,32 +16,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,15 +45,12 @@ import com.example.mobile_fsd_jetpack.ui.theme.ButtonImage
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.example.mobile_fsd_jetpack.ui.theme.BasicDialog
 
 @Composable
 fun ReservationScreen(navController: NavController?= null) {
-
-    val context = LocalContext.current;
-    val name : String? = UserAuth(context).getNama();
+    val context = LocalContext.current
+    val name : String? = UserAuth(context).getNama()
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -73,8 +60,9 @@ fun ReservationScreen(navController: NavController?= null) {
         if(showDialog) {
             BasicDialog(
                 onDismiss = { showDialog = false },
+                onDismissClickOutside = true,
                 title = "Credit",
-                buttonText = "Ok",
+                buttonText = "OK",
                 content = {
                     Column{
                         Text(text = "Aurelius Ivan Wijaya (00000054769)")
@@ -100,35 +88,34 @@ fun ReservationScreen(navController: NavController?= null) {
                 painter = painterResource(id = R.drawable.super_graphic),
                 contentDescription = "Super Graphic"
             )
-            Spacer(modifier = Modifier.height(20.dp))
-            ButtonImage(
-                text = "Room Reservation",
-                image = R.drawable.room_reservation,
-                onClick = {},
-                route = ReservationRoutes.RoomReservation.route,
-                navController = navController,
-                imageRatio = 56f/27f,
+            Column (
+                verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
-                    .padding(20.dp, 0.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(56f / 27f)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-            ButtonImage(
-                text = "Item Reservation",
-                image = R.drawable.room_reservation,
-                onClick = {},
-                route = ReservationRoutes.ItemReservation.route,
-                navController = navController,
-                imageRatio = 56f/27f,
-                modifier = Modifier
-                    .padding(20.dp, 0.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(56f / 27f)
-            )
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
+                ButtonImage(
+                    text = "Room Reservation",
+                    image = R.drawable.room_reservation,
+                    onClick = {},
+                    route = ReservationRoutes.RoomReservation.route,
+                    navController = navController,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
+                ButtonImage(
+                    text = "Item Reservation",
+                    image = R.drawable.item_reservation,
+                    onClick = {},
+                    route = ReservationRoutes.ItemReservation.route,
+                    navController = navController,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                )
+            }
         }
-
     }
 }
 

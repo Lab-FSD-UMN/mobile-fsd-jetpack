@@ -33,6 +33,8 @@ import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellDisplay
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellTypes
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import com.example.mobile_fsd_jetpack.ui.theme.RoomCard
 import com.example.mobile_fsd_jetpack.ui.theme.SearchBar
@@ -48,6 +50,8 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
     var rooms by remember { mutableStateOf<List<Room>>(emptyList()) }
     var allRooms by remember { mutableStateOf<List<Room>>(emptyList()) }
     var searchText by remember { mutableStateOf("") }
+
+    var isLoading by remember { mutableStateOf(true) }
 
     val retrofit = BaseAPIBuilder().retrofit
     val getRoomsApiService = retrofit.create(RoomsApiService::class.java)
@@ -72,10 +76,14 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                 } else {
                     Log.d("e", response.message())
                 }
+
+                isLoading = false
             }
             override fun onFailure(call: Call<GetRoomsApiResponse>, t: Throwable) {
                 isLoading = false
                 Log.d("onFailure", t.message.toString())
+
+                isLoading = false
             }
         })
     }
@@ -109,22 +117,27 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                 }
             )
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxSize()
-//                    .verticalScroll(rememberScrollState())
-            ) {
-                items(rooms) { room ->
-                    RoomCard(
-                        route = "${ReservationRoutes.RoomReservationForm.route}/${room.id}",
-                        navController = navController,
-                        context = context,
-                        room = room,
-                    )
-                }
+            when {
+                isLoading -> LoadingScreen()
+                rooms.isNotEmpty() -> // pake room aja
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                        //                    .verticalScroll(rememberScrollState())
+                    ) {
+                        items(rooms) { room ->
+                            RoomCard(
+                                route = "${ReservationRoutes.RoomReservationForm.route}/${room.id}",
+                                navController = navController,
+                                context = context,
+                                room = room,
+                            )
+                        }
+                    }
+                else -> NotGoingWellDisplay(type = NotGoingWellTypes.EmptyList)
             }
 
 

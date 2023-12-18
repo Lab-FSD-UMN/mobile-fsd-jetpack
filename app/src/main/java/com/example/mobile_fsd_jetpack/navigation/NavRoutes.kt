@@ -87,6 +87,8 @@ fun getCategory(route: String): String? {
         ReservationRoutes.ItemReservation.route -> cat[0]
         ReservationRoutes.RoomReservationForm.route -> cat[0]
         ReservationRoutes.ItemReservationForm.route -> cat[0]
+        "${ReservationRoutes.RoomReservationForm.route}/{id}" -> cat[0]
+        "${ReservationRoutes.ItemReservationForm.route}/{id}" -> cat[0]
 
         // MONITORING
         // nanti tab navigation
