@@ -58,6 +58,7 @@ import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.navigation.MainNavRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.BasicDialog
+import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import retrofit2.Call
 import retrofit2.Callback
@@ -115,11 +116,13 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
 
     var item by remember { mutableStateOf<Item?>(null) }
     var itemIsNotFound by remember { mutableStateOf(false)}
-//    var showDialog by remember { mutableStateOf(false) }
+
     var modalData by remember { mutableStateOf<ApiResponse?>(null) }
 
     val retrofit = BaseAPIBuilder().retrofit
     val getItemsApiService = retrofit.create(ItemsApiService::class.java)
+
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(id) {
         if (id != null){
@@ -135,10 +138,14 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                     } else {
                         Log.d("e", response.message())
                     }
+
+                    isLoading = false
                 }
 
                 override fun onFailure(call: Call<GetItemByIDApiResponse>, t: Throwable) {
                     Log.d("onFailure", t.message.toString())
+
+                    isLoading = false
                 }
             })
         }
@@ -153,233 +160,240 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
             .wrapContentSize(Alignment.TopCenter)
     ) {
         PageHeading("Item Reservation Form", navController)
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-                .wrapContentSize(Alignment.TopCenter)
-                .verticalScroll(rememberScrollState())
-        ) {
-            item?.let {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.surface,
-                            shape = MaterialTheme.shapes.medium
-                        )
-                        .padding(16.dp)
-                ) {
-
-                    val processedUrl = item?.image?.replace("public/", "storage/") ?: ""
-
-                    Image(
-                        painter = rememberImagePainter(
-                            data = "${API_URL}/${processedUrl}",
-                            builder = {
-                                crossfade(true)
-                                placeholder(android.R.drawable.ic_menu_gallery)
-                            }
-                        ),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .aspectRatio(1f)
-                    )
-                    Text(
-                        text = it.name,
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .padding(16.dp)
-                    )
-                }
-
-
-                Spacer(modifier = Modifier.height(16.dp))
-
+        when {
+            isLoading -> LoadingScreen()
+            else ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(16.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.surface,
-                            shape = MaterialTheme.shapes.medium
-                        )
-                ){
-                    var selectedDate by remember { mutableStateOf("Select Date") }
-                    var startTime by remember { mutableStateOf("Select Start Time") }
-                    var endTime by remember { mutableStateOf("Select End Time") }
-                    var quantity by remember { mutableStateOf(1) }
-                    var description by remember { mutableStateOf("") }
+                        .padding(20.dp)
+                        .wrapContentSize(Alignment.TopCenter)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    item?.let {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(150.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.surface,
+                                    shape = MaterialTheme.shapes.medium
+                                )
+                                .padding(16.dp)
+                        ) {
+
+                            val processedUrl = item?.image?.replace("public/", "storage/") ?: ""
+
+                            Image(
+                                painter = rememberImagePainter(
+                                    data = "${API_URL}/${processedUrl}",
+                                    builder = {
+                                        crossfade(true)
+                                        placeholder(android.R.drawable.ic_menu_gallery)
+                                    }
+                                ),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .aspectRatio(1f)
+                            )
+                            Text(
+                                text = it.name,
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .padding(16.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(16.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.surface,
+                                    shape = MaterialTheme.shapes.medium
+                                )
+                        ) {
+                            var selectedDate by remember { mutableStateOf("Select Date") }
+                            var startTime by remember { mutableStateOf("Select Start Time") }
+                            var endTime by remember { mutableStateOf("Select End Time") }
+                            var quantity by remember { mutableStateOf(1) }
+                            var description by remember { mutableStateOf("") }
 
 
-                    BasicTextField(
-                        value = selectedDate,
-                        onValueChange = {
-                            selectedDate = it
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                showDatePickerDialog(context) { selectedDateString ->
-                                    selectedDate = selectedDateString
+                            BasicTextField(
+                                value = selectedDate,
+                                onValueChange = {
+                                    selectedDate = it
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        showDatePickerDialog(context) { selectedDateString ->
+                                            selectedDate = selectedDateString
+                                        }
+                                    }
+                                    .height(50.dp)
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .border(1.dp, Color.Black),
+                                enabled = false
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentSize(Alignment.Center)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(50.dp)
+                                        .border(1.dp, Color.Black)
+                                        .padding(8.dp)
+                                        .background(MaterialTheme.colorScheme.surface)
+                                        .clickable {
+                                            showTimePickerDialog(context) { selectedHour, selectedMinute ->
+                                                startTime = "$selectedHour:$selectedMinute"
+                                            }
+                                        }
+                                ) {
+                                    BasicTextField(
+                                        value = startTime,
+                                        onValueChange = { startTime = it },
+                                        singleLine = true,
+                                        keyboardOptions = KeyboardOptions.Default.copy(
+                                            keyboardType = KeyboardType.Text,
+                                            imeAction = ImeAction.Done
+                                        ),
+                                        modifier = Modifier.fillMaxSize(),
+                                        enabled = false
+                                    )
                                 }
+                                Spacer(modifier = Modifier.width(16.dp))
+
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(50.dp)
+                                        .border(1.dp, Color.Black)
+                                        .padding(8.dp)
+                                        .background(MaterialTheme.colorScheme.surface)
+                                        .clickable {
+                                            showTimePickerDialog(context) { selectedHour, selectedMinute ->
+                                                endTime = "$selectedHour:$selectedMinute"
+                                            }
+                                        }
+                                ) {
+                                    BasicTextField(
+                                        value = endTime,
+                                        onValueChange = { endTime = it },
+                                        singleLine = true,
+                                        keyboardOptions = KeyboardOptions.Default.copy(
+                                            keyboardType = KeyboardType.Text,
+                                            imeAction = ImeAction.Done
+                                        ),
+                                        modifier = Modifier.fillMaxSize(),
+                                        enabled = false
+                                    )
+                                }
+
                             }
-                            .height(50.dp)
-                            .background(MaterialTheme.colorScheme.surface)
-                            .border(1.dp, Color.Black),
-                        enabled = false
-                    )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(50.dp)
-                                .border(1.dp, Color.Black)
-                                .padding(8.dp)
-                                .background(MaterialTheme.colorScheme.surface)
-                                .clickable {
-                                    showTimePickerDialog(context) { selectedHour, selectedMinute ->
-                                        startTime = "$selectedHour:$selectedMinute"
-                                    }
-                                }
-                        ) {
-                            BasicTextField(
-                                value = startTime,
-                                onValueChange = { startTime = it },
-                                singleLine = true,
-                                keyboardOptions = KeyboardOptions.Default.copy(
-                                    keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Done
-                                ),
-                                modifier = Modifier.fillMaxSize(),
-                                enabled = false
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(50.dp)
-                                .border(1.dp, Color.Black)
-                                .padding(8.dp)
-                                .background(MaterialTheme.colorScheme.surface)
-                                .clickable {
-                                    showTimePickerDialog(context) { selectedHour, selectedMinute ->
-                                        endTime = "$selectedHour:$selectedMinute"
-                                    }
-                                }
-                        ) {
-                            BasicTextField(
-                                value = endTime,
-                                onValueChange = { endTime = it },
-                                singleLine = true,
-                                keyboardOptions = KeyboardOptions.Default.copy(
-                                    keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Done
-                                ),
-                                modifier = Modifier.fillMaxSize(),
-                                enabled = false
-                            )
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedTextField(
-                        value = quantity.toString(),
-                        onValueChange = {
-                            quantity = it.toIntOrNull() ?: 0
-                        },
-                        label = { Text("Quantity") },
-                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedTextField(
-                        value = description,
-                        onValueChange = { description = it },
-                        label = { Text("Description (Purpose)") },
-                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = {
-                            // POST the reservation
-
-                            Log.d("date", selectedDate)
-                            Log.d("start_time", startTime)
-                            Log.d("end_time", endTime)
-                            Log.d("qty", quantity.toString())
-                            Log.d("desc", description)
-
-                            val userToken = UserAuth(context).getToken()
-
-                            val body = ItemReservation(
-                                item_id = it.id,
-                                quantity = quantity,
-                                reservation_date_start = selectedDate,
-                                reservation_date_end = selectedDate,
-                                reservation_time_start = startTime,
-                                reservation_time_end = endTime,
-                                note = description
+                            OutlinedTextField(
+                                value = quantity.toString(),
+                                onValueChange = {
+                                    quantity = it.toIntOrNull() ?: 0
+                                },
+                                label = { Text("Quantity") },
+                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                                modifier = Modifier.fillMaxWidth()
                             )
 
-                            val call = getItemsApiService.reserveItem(
-                                "Bearer ${userToken}",
-                                body
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            OutlinedTextField(
+                                value = description,
+                                onValueChange = { description = it },
+                                label = { Text("Description (Purpose)") },
+                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
+                                modifier = Modifier.fillMaxWidth()
                             )
 
-                            call.enqueue(object : Callback<ApiResponse> {
-                                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                                    val responseBody = response.body()
-                                    Log.d("bid", responseBody.toString())
-                                    modalData = ApiResponse(
-                                        status = responseBody?.status,
-                                        message = responseBody?.message
-                                        // masih gagal klo buat response 400, ntah knp kalo 201 slalu bs kebaca statusny
-                                        // slain itu null trs
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Button(
+                                onClick = {
+                                    // POST the reservation
+
+                                    Log.d("date", selectedDate)
+                                    Log.d("start_time", startTime)
+                                    Log.d("end_time", endTime)
+                                    Log.d("qty", quantity.toString())
+                                    Log.d("desc", description)
+
+                                    val userToken = UserAuth(context).getToken()
+
+                                    val body = ItemReservation(
+                                        item_id = it.id,
+                                        quantity = quantity,
+                                        reservation_date_start = selectedDate,
+                                        reservation_date_end = selectedDate,
+                                        reservation_time_start = startTime,
+                                        reservation_time_end = endTime,
+                                        note = description
                                     )
-                                }
 
-                                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                                    modalData = ApiResponse(
-                                        status = 500,
-                                        message = "Failed to process your reservation."
+                                    val call = getItemsApiService.reserveItem(
+                                        "Bearer ${userToken}",
+                                        body
                                     )
-                                }
-                            })
 
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                    ) {
-                        Text("Submit")
+                                    call.enqueue(object : Callback<ApiResponse> {
+                                        override fun onResponse(
+                                            call: Call<ApiResponse>,
+                                            response: Response<ApiResponse>
+                                        ) {
+                                            val responseBody = response.body()
+                                            Log.d("bid", responseBody.toString())
+                                            modalData = ApiResponse(
+                                                status = responseBody?.status,
+                                                message = responseBody?.message
+                                                // masih gagal klo buat response 400, ntah knp kalo 201 slalu bs kebaca statusny
+                                                // slain itu null trs
+                                            )
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<ApiResponse>,
+                                            t: Throwable
+                                        ) {
+                                            modalData = ApiResponse(
+                                                status = 500,
+                                                message = "Failed to process your reservation."
+                                            )
+                                        }
+                                    })
+
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp)
+                            ) {
+                                Text("Submit")
+                            }
+
+                        }
                     }
-
                 }
-            } ?: run {
-                Text(text="Loading")
-            }
         }
 
         if (modalData != null){
@@ -407,20 +421,6 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
             )
         }
     }
-}
-
-@Composable
-fun ShowDialog(status : Int?, message: String?, onDismiss: () -> Unit) {
-    val title = if (status == 201) "Success" else "Fail"
-    BasicDialog(
-        onDismiss = { onDismiss() },
-        onDismissClickOutside = false,
-        title = title,
-        buttonText = "OK",
-        content = {
-            Text(text = message ?: "-")
-        }
-    )
 }
 
 @Preview

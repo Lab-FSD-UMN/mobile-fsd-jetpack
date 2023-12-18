@@ -27,12 +27,11 @@ import com.example.mobile_fsd_jetpack.api.endpoints.item.ItemsApiService
 import com.example.mobile_fsd_jetpack.api.response_model.item.GetItemsApiResponse
 import com.example.mobile_fsd_jetpack.models.Item
 import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
-import com.example.mobile_fsd_jetpack.pages.monitoring.ItemReservationList
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.ItemCard
 import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
-import com.example.mobile_fsd_jetpack.ui.theme.NoList
-import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellDisplay
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellTypes
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import com.example.mobile_fsd_jetpack.ui.theme.SearchBar
 import retrofit2.Call
@@ -130,7 +129,7 @@ fun ItemReservationScreen(navController: NavController?= null) {
                             )
                         }
                     }
-                else -> NoList()
+                else -> NotGoingWellDisplay(type = NotGoingWellTypes.EmptyList)
             }
         }
     }

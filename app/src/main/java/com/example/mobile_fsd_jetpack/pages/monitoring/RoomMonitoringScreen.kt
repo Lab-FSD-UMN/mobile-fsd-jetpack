@@ -21,7 +21,8 @@ import com.example.mobile_fsd_jetpack.api.response_model.room.GetSelfRoomReserva
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.models.RoomReservationData
 import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
-import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellDisplay
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellTypes
 import com.example.mobile_fsd_jetpack.ui.theme.ReservationCard
 import retrofit2.Callback
 import retrofit2.Call
@@ -67,7 +68,7 @@ fun RoomMonitoringScreen(navController: NavController) {
         when {
             isLoading -> LoadingScreen()
             roomReservations.isNotEmpty() -> RoomReservationList(roomReservations)
-            else -> NoReservation(navController)
+            else -> NotGoingWellDisplay(navController = navController, type = NotGoingWellTypes.NoReservation)
         }
     }
 }

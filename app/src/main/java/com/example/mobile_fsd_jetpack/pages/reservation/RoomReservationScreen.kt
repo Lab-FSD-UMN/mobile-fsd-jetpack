@@ -31,7 +31,8 @@ import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
-import com.example.mobile_fsd_jetpack.ui.theme.NoList
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellDisplay
+import com.example.mobile_fsd_jetpack.ui.theme.NotGoingWellTypes
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import com.example.mobile_fsd_jetpack.ui.theme.RoomCard
 import com.example.mobile_fsd_jetpack.ui.theme.SearchBar
@@ -131,7 +132,7 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                             )
                         }
                     }
-                else -> NoList()
+                else -> NotGoingWellDisplay(type = NotGoingWellTypes.EmptyList)
             }
         }
     }
