@@ -181,7 +181,7 @@ fun DetailBottomSheet(
                     builder = {
                         crossfade(true)
                         placeholder(android.R.drawable.ic_menu_gallery)
-                    }
+                    },
                 ),
                 contentDescription = "Reserved Image",
                 contentScale = ContentScale.Crop,

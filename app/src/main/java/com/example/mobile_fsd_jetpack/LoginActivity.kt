@@ -18,8 +18,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -39,9 +42,11 @@ import com.example.mobile_fsd_jetpack.api.utils.LoginCallback
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 import com.example.mobile_fsd_jetpack.auth.UserAuth
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
+import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda
 import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lighter
 import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
+import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.Orange
 
 class LoginActivity : ComponentActivity() {
@@ -92,195 +97,224 @@ fun LoginForm(navController : NavController, context : Context) {
     val focusManager = LocalFocusManager.current
 //    val keyboardController = LocalSoftwareKeyboardController.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = AlmostWhite)
-            .padding(horizontal = 40.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.logo_fsd),
-            contentDescription = "logo_fsd",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            contentScale = ContentScale.Crop,
-        )
+    var isLoading by remember { mutableStateOf(false) }
+    Box(modifier = Modifier.fillMaxSize()){
         Column(
-            verticalArrangement = Arrangement.spacedBy(35.dp, Alignment.CenterVertically),
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = BiruMuda_Lightest,
-                    shape = RoundedCornerShape(size = 8.dp)
-                )
-                .padding(25.dp, 40.dp),
-
-            ) {
+                .fillMaxSize()
+                .background(color = AlmostWhite)
+                .padding(horizontal = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.logo_fsd),
+                contentDescription = "logo_fsd",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                contentScale = ContentScale.Crop,
+            )
             Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // Email Field
-                Text(
-                    text = "Email",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(700),
-                        color = Color.Black,
+                verticalArrangement = Arrangement.spacedBy(35.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = BiruMuda_Lightest,
+                        shape = RoundedCornerShape(size = 8.dp)
                     )
-                )
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Email
-                    ),
-                    textStyle = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(300),
-                        color = BiruUMN,
-                    ),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = BiruMuda_Lighter,
-                        unfocusedBorderColor = BiruMuda_Lighter
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                        .background(
-                            color = AlmostWhite,
-                            shape = RoundedCornerShape(size = 12.dp),
+                    .padding(25.dp, 40.dp),
+
+                ) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Email Field
+                    Text(
+                        text = "Email",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight(700),
+                            color = Color.Black,
                         )
-                )
-            }
-
-            // Password Field
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Password",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(700),
-                        color = Color.Black,
                     )
-                )
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Password
-                    ),
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { isPasswordVisible = !isPasswordVisible },
-                            modifier = Modifier.padding(8.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(
-                                    id =
-                                    if (isPasswordVisible) R.drawable.pass_hide
-                                    else R.drawable.pass_show
-                                ),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(Color.Gray),
-                                modifier = Modifier
-                                    .size(24.dp)
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Email
+                        ),
+                        textStyle = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(300),
+                            color = BiruUMN,
+                        ),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = BiruMuda_Lighter,
+                            unfocusedBorderColor = BiruMuda_Lighter
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                            .background(
+                                color = AlmostWhite,
+                                shape = RoundedCornerShape(size = 12.dp),
                             )
+                    )
+                }
+
+                // Password Field
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Password",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight(700),
+                            color = Color.Black,
+                        )
+                    )
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Password
+                        ),
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { isPasswordVisible = !isPasswordVisible },
+                                modifier = Modifier.padding(8.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(
+                                        id =
+                                        if (isPasswordVisible) R.drawable.pass_hide
+                                        else R.drawable.pass_show
+                                    ),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(Color.Gray),
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                )
+                            }
+                        },
+                        textStyle = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight(300),
+                            color = BiruUMN,
+                        ),
+                        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = BiruMuda_Lighter,
+                            unfocusedBorderColor = BiruMuda_Lighter
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                            .background(
+                                color = AlmostWhite,
+                                shape = RoundedCornerShape(size = 12.dp),
+                            )
+                        //                .softwareKeyboard(keyboardController)
+                    )
+                }
+
+                // Submit Button
+                Button(
+                    enabled = !isLoading,
+                    onClick = {
+                        isLoading = true
+                        if (email.isNotEmpty() && password.isNotEmpty()) {
+                            println("Email: $email, Password: $password")
+                            val login =
+                                UserAuth(context).login(email, password, object : LoginCallback {
+                                    override fun onLoginSuccess() {
+                                        //                            navController.navigate("mainActivity")
+                                        //                            Log.d("Success", "Success")
+                                        //                            Toast.makeText(context, "Login Success", Toast.LENGTH_SHORT).show()
+                                        val nim = "123456789"
+                                        if (nim != null) {
+                                            isLoading = false
+                                            navController.navigate("mainActivity")
+                                            Log.d("Success", "Success")
+                                            Toast.makeText(
+                                                context,
+                                                "Login Success",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            isLoading = false
+                                            // Handle the case where nim is null
+                                            Log.e("Error", "nim is null")
+                                            Toast.makeText(
+                                                context,
+                                                "Login Failed: nim is null",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+
+                                    override fun onLoginFailure() {
+                                        //                            navController.navigate("mainActivity")
+                                        isLoading = false
+                                        Log.d("Fail", "Fail")
+                                        Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                })
+
+                        }
+
+                        else {
+                            isLoading = false
+                            Toast.makeText(
+                                context,
+                                "Fill in both email and password fields",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     },
-                    textStyle = TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight(300),
-                        color = BiruUMN,
-                    ),
-                    visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = BiruMuda_Lighter,
-                        unfocusedBorderColor = BiruMuda_Lighter
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                        .background(
-                            color = AlmostWhite,
-                            shape = RoundedCornerShape(size = 12.dp),
+                    colors = ButtonDefaults
+                        .buttonColors(
+                            containerColor = Orange,
+                            contentColor = AlmostWhite
                         )
-                    //                .softwareKeyboard(keyboardController)
-                )
-            }
-
-            // Submit Button
-            Button(
-                onClick = {
-                    if (email.isNotEmpty() && password.isNotEmpty()) {
-                        println("Email: $email, Password: $password")
-                        val login =
-                            UserAuth(context).login(email, password, object : LoginCallback {
-                                override fun onLoginSuccess() {
-                                    //                            navController.navigate("mainActivity")
-                                    //                            Log.d("Success", "Success")
-                                    //                            Toast.makeText(context, "Login Success", Toast.LENGTH_SHORT).show()
-                                    val nim = "123456789"
-                                    if (nim != null) {
-                                        navController.navigate("mainActivity")
-                                        Log.d("Success", "Success")
-                                        Toast.makeText(
-                                            context,
-                                            "Login Success",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } else {
-                                        // Handle the case where nim is null
-                                        Log.e("Error", "nim is null")
-                                        Toast.makeText(
-                                            context,
-                                            "Login Failed: nim is null",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
-
-                                override fun onLoginFailure() {
-                                    //                            navController.navigate("mainActivity")
-                                    Log.d("Fail", "Fail")
-                                    Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT)
-                                        .show()
-                                }
-                            })
-
-                    }
-                },
-                colors = ButtonDefaults
-                    .buttonColors(
-                        containerColor = Orange,
-                        contentColor = AlmostWhite
+                ) {
+                    Text(
+                        text = "LOGIN",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp),
                     )
-            ) {
-                Text(
-                    text = "LOGIN",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp),
-                )
+                }
             }
+
+            Image(
+                painter = painterResource(R.drawable.logo_labfsd),
+                contentDescription = "logo_lab",
+                modifier = Modifier
+                    .width(50.dp),
+                contentScale = ContentScale.FillWidth
+            )
         }
 
-        Image(
-            painter = painterResource(R.drawable.logo_labfsd),
-            contentDescription = "logo_lab",
-            modifier = Modifier
-                .width(50.dp),
-            contentScale = ContentScale.FillWidth
-        )
+        if(isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        BiruMuda.copy(alpha = 0.6f)
+                    )
+            ) {
+                LoadingScreen()
+            }
+        }
     }
 }

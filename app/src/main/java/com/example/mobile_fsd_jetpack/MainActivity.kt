@@ -61,9 +61,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mainNavController = rememberNavController()
             val context = LocalContext.current
+
             MobilefsdjetpackTheme {
-                val bottomBarHeight = 56.dp
-                val bottomBarOffsetHeightPx = remember { mutableFloatStateOf(0f) }
                 var buttonsVisible = remember { mutableStateOf(true) }
 
                 Scaffold(
@@ -77,14 +76,14 @@ class MainActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier.padding(paddingValues)
                     ) {
-//                        if (!UserAuth(context).authenticated()){
-//                            val intent = Intent(context, LoginActivity::class.java)
-//                            context.startActivity(intent)
-//                        }
-//                        else {
+                        if (!UserAuth(context).authenticated()){
+                            val intent = Intent(context, LoginActivity::class.java)
+                            context.startActivity(intent)
+                        }
+                        else {
                         NavigationGraph(navController = mainNavController)
 //                            ReservationNavigationGraph(navController = reservationNavController)
-//                        }
+                        }
                     }
                 }
             }
