@@ -31,6 +31,7 @@ import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
+import com.example.mobile_fsd_jetpack.ui.theme.NoList
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import com.example.mobile_fsd_jetpack.ui.theme.RoomCard
 import com.example.mobile_fsd_jetpack.ui.theme.SearchBar
@@ -112,7 +113,7 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
 
             when {
                 isLoading -> LoadingScreen()
-                allRooms.isNotEmpty() ->
+                rooms.isNotEmpty() -> // pake room aja
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -130,7 +131,7 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                             )
                         }
                     }
-                else -> LoadingScreen()
+                else -> NoList()
             }
         }
     }

@@ -31,6 +31,7 @@ import com.example.mobile_fsd_jetpack.pages.monitoring.ItemReservationList
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.ItemCard
 import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
+import com.example.mobile_fsd_jetpack.ui.theme.NoList
 import com.example.mobile_fsd_jetpack.ui.theme.NoReservation
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import com.example.mobile_fsd_jetpack.ui.theme.SearchBar
@@ -111,7 +112,7 @@ fun ItemReservationScreen(navController: NavController?= null) {
 
             when {
                 isLoading -> LoadingScreen()
-                allItems.isNotEmpty() ->
+                items.isNotEmpty() ->
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -129,7 +130,7 @@ fun ItemReservationScreen(navController: NavController?= null) {
                             )
                         }
                     }
-                else -> LoadingScreen()
+                else -> NoList()
             }
         }
     }
