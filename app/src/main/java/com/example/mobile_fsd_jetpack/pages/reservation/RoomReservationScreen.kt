@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import com.example.mobile_fsd_jetpack.api.response_model.room.GetRoomsApiRespons
 import com.example.mobile_fsd_jetpack.models.Room
 import com.example.mobile_fsd_jetpack.navigation.ReservationRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
+import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.MobilefsdjetpackTheme
 import com.example.mobile_fsd_jetpack.ui.theme.PageHeading
 import com.example.mobile_fsd_jetpack.ui.theme.RoomCard
@@ -40,8 +43,6 @@ import retrofit2.Response
 
 @Composable
 fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= null nya ilangin
-
-
     val context = LocalContext.current
 
     var rooms by remember { mutableStateOf<List<Room>>(emptyList()) }
@@ -51,11 +52,15 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
     val retrofit = BaseAPIBuilder().retrofit
     val getRoomsApiService = retrofit.create(RoomsApiService::class.java)
 
+    var isLoading by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit){
         val call = getRoomsApiService.getRooms()
-
+        isLoading = true
         call.enqueue(object : Callback<GetRoomsApiResponse> {
+
             override fun onResponse(call: Call<GetRoomsApiResponse>, response: Response<GetRoomsApiResponse>) {
+                isLoading = false
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     Log.d("t", responseBody.toString())
@@ -69,6 +74,7 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                 }
             }
             override fun onFailure(call: Call<GetRoomsApiResponse>, t: Throwable) {
+                isLoading = false
                 Log.d("onFailure", t.message.toString())
             }
         })
@@ -119,6 +125,15 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                         room = room,
                     )
                 }
+            }
+
+
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .wrapContentSize(Alignment.Center)
+                )
             }
         }
     }

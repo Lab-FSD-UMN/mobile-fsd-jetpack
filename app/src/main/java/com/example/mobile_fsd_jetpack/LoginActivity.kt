@@ -136,9 +136,6 @@ fun LoginForm(navController : NavController, context : Context) {
                     val login = UserAuth(context).login(email, password
                         , object : LoginCallback {
                         override fun onLoginSuccess() {
-//                            navController.navigate("mainActivity")
-//                            Log.d("Success", "Success")
-//                            Toast.makeText(context, "Login Success", Toast.LENGTH_SHORT).show()
                             val nim = "123456789"
                             if (nim != null) {
                                 navController.navigate("mainActivity")
@@ -152,7 +149,6 @@ fun LoginForm(navController : NavController, context : Context) {
                         }
 
                         override fun onLoginFailure() {
-//                            navController.navigate("mainActivity")
                             Log.d("Fail", "Fail")
                             Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
                         }

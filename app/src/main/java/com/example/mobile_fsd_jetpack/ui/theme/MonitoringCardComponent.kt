@@ -1,5 +1,6 @@
 package com.example.mobile_fsd_jetpack.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -68,7 +70,12 @@ fun ReservationCard(
 
     // If itemReservation == null, then it is a room
     val isRoom: Boolean = itemReservation == null
-    var data = GeneralMonitoringData(formatStatus(55), DateTime("Monday", "16.00"),  DateTime("Monday", "18.00"), "")
+    var data = GeneralMonitoringData(
+        formatStatus(55),
+        DateTime("Monday", "16.00"),
+        DateTime("Monday", "18.00"),
+        ""
+    )
 
     // all general attribute can be assigned here
     if (roomReservation != null) {
@@ -89,11 +96,26 @@ fun ReservationCard(
         )
     }
 
+
     Card(
-        onClick = { showBottomSheet = true },
+        onClick = {
+            if (isRoom) {
+                Log.d("Room Info", roomReservation?.id.toString())
+                Log.d("Room Image", roomReservation?.room?.image.toString())
+            }
+            showBottomSheet = true
+        },
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+            contentColor = Color.Black
+        ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(8.dp)
+            ),
 //        elevation = 4.dp // Convert Dp to CardElevation
     ) {
         Column(
@@ -110,14 +132,9 @@ fun ReservationCard(
                     fontSize = 18.sp
                 )
             )
-            Text(
-                text = "Status: ${data.status.text}" ,
-                style = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp,
-                    color = data.status.color,
-                )
-            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = "${data.reservationStart.date} • ${data.reservationStart.time} - ${data.reservationEnd.time}",
                 style = TextStyle(
@@ -125,6 +142,27 @@ fun ReservationCard(
                     fontSize = 14.sp
                 )
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = data.status.text,
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    color = Color.White,
+                ),
+                modifier = Modifier
+                    .background(
+                        color = data.status.color,
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .padding(4.dp, 2.dp)
+                    .align(Alignment.Start)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+
         }
     }
     if (showBottomSheet) {
@@ -135,31 +173,31 @@ fun ReservationCard(
             sheetState = bottomSheetState,
             containerColor = BiruMuda_Lightest,
         ) {
-            if(isRoom)
+            if (isRoom)
                 DetailBottomSheet(
                     roomReservation = roomReservation,
                     data = data,
-                    isRoom = true)
+                    isRoom = true
+                )
             else
                 DetailBottomSheet(
                     itemReservation = itemReservation,
                     data = data,
-                    isRoom = false)
+                    isRoom = false
+                )
         }
     }
 }
 
 @Composable
 fun DetailBottomSheet(
-    roomReservation: RoomReservationData ?= null,
-    itemReservation: ItemReservationData ?= null,
+    roomReservation: RoomReservationData? = null,
+    itemReservation: ItemReservationData? = null,
     data: GeneralMonitoringData,
     isRoom: Boolean
 ) {
-
     val API_URL = BuildConfig.API_URL
-
-    Column (
+    Column(
         modifier = Modifier
             .background(BiruMuda_Lightest)
             .padding(
@@ -168,7 +206,7 @@ fun DetailBottomSheet(
                 top = 0.dp,
                 bottom = 50.dp
             )
-    ){
+    ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.Top),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -176,8 +214,8 @@ fun DetailBottomSheet(
             Image(
                 painter = rememberImagePainter(
                     data =
-                        if (isRoom) "${API_URL}${roomReservation?.room?.image}"
-                        else "${API_URL}${itemReservation?.item?.image}",
+                    if (isRoom) "${API_URL}/${roomReservation?.room?.image}"
+                    else "${API_URL}/${itemReservation?.item?.image}",
                     builder = {
                         crossfade(true)
                         placeholder(android.R.drawable.ic_menu_gallery)
@@ -212,7 +250,10 @@ fun DetailBottomSheet(
             if (!isRoom) TheSection(title = "Quantity", body = "${itemReservation?.quantity} pcs")
 
             TheSection(title = "Date", body = data.reservationStart.date)
-            TheSection(title = "Time", body = "${data.reservationStart.time} - ${data.reservationEnd.time}")
+            TheSection(
+                title = "Time",
+                body = "${data.reservationStart.time} - ${data.reservationEnd.time}"
+            )
 
             Spacer(modifier = Modifier.height(5.dp))
             TheSection(title = "Description", body = "${data.note}")
@@ -248,7 +289,7 @@ fun NoReservation(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 32.dp)
-    ){
+    ) {
         Text(
             text = "No reservations yet",
             style = TextStyle(
@@ -307,8 +348,7 @@ fun TheSection(title: String, body: String) {
         if (title != "Description") {
             SectionTitle(text = title)
             SectionBody(text = body)
-        }
-        else {
+        } else {
             Text(
                 text = title,
                 style = TextStyle(
