@@ -33,12 +33,11 @@ fun RoomMonitoringScreen(navController: NavController) {
 
     val context = LocalContext.current
     var roomReservations by remember { mutableStateOf<List<RoomReservationData?>>(emptyList()) }
+
     var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit){
-
         val userToken = UserAuth(context).getToken()
-
         val retrofit = BaseAPIBuilder().retrofit
         val getItemsApiService = retrofit.create(RoomsApiService::class.java)
 
@@ -46,11 +45,13 @@ fun RoomMonitoringScreen(navController: NavController) {
         call.enqueue(object : Callback<GetSelfRoomReservationApiResponse> {
             override fun onResponse(call: Call<GetSelfRoomReservationApiResponse>, response: Response<GetSelfRoomReservationApiResponse>) {
                 Log.d("message", response.body()?.message.toString())
-//                Log.d("data", response.body()?.data.
-                var data = response.body()?.data
-                if (data != null) {
-                    Log.d("data", data[0].toString())
+                var data = response.body()?.data?.sortedBy { it?.status }
+                if (data != null && data.isNotEmpty()) {
                     roomReservations = data
+                }
+                else {
+                    Log.d("data", "empty")
+                    roomReservations = emptyList()
                 }
                 isLoading = false
             }
@@ -58,11 +59,8 @@ fun RoomMonitoringScreen(navController: NavController) {
             override fun onFailure(call: Call<GetSelfRoomReservationApiResponse>, t: Throwable) {
                 Log.d("onFailure", t.message.toString())
                 isLoading = false
-                // nanti mungkin bisa tambahin error handler disini
             }
-        })
-//        Log.d("items", roomReservations.toString())
-    }
+        })}
 
     Column {
         when {
