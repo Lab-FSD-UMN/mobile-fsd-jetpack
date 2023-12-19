@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -39,6 +40,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -211,6 +213,7 @@ fun SearchBar(placeholder: String, searchText: String, onSearchTextChanged: (Str
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Search
         ),
+        keyboardActions = KeyboardActions(onSearch = {onClick()}),
         textStyle = TextStyle(
             fontSize = 16.sp,
             fontWeight = FontWeight(300),
