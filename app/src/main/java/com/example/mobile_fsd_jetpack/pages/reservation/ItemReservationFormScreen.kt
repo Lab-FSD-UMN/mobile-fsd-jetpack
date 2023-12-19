@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -221,9 +222,8 @@ fun ItemReservationFormScreen(navController: NavController? = null, id: String?,
                             var selectedDate by remember { mutableStateOf("Select Date") }
                             var startTime by remember { mutableStateOf("Select Start Time") }
                             var endTime by remember { mutableStateOf("Select End Time") }
-                            var quantity by remember { mutableStateOf(1) }
+                            var quantity by remember { mutableIntStateOf(1) }
                             var description by remember { mutableStateOf("") }
-
 
                             BasicTextField(
                                 value = selectedDate,

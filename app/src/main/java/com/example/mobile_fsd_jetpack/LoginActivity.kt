@@ -17,12 +17,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -34,6 +30,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -48,6 +45,7 @@ import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
 import com.example.mobile_fsd_jetpack.ui.theme.LoadingScreen
 import com.example.mobile_fsd_jetpack.ui.theme.Orange
+import com.example.mobile_fsd_jetpack.R
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -308,14 +306,17 @@ fun LoginForm(navController : NavController, context : Context) {
         }
 
         if(isLoading) {
-            Box(
+            AlertDialog(
+                onDismissRequest = { isLoading = false },
+                properties = DialogProperties(
+                    dismissOnClickOutside = false,
+                    dismissOnBackPress = false,
+                ),
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        BiruMuda.copy(alpha = 0.6f)
-                    )
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.Center)
             ) {
-                LoadingScreen()
+                LoadingScreen(color = BiruMuda_Lightest)
             }
         }
     }

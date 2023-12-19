@@ -1,14 +1,6 @@
 package com.example.mobile_fsd_jetpack.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
-import com.example.mobile_fsd_jetpack.R
 
 sealed interface RouteProvider {
     val route: String
@@ -20,7 +12,7 @@ sealed class MainNavRoutes(
     override val route: String,
     override val title: String? = null,
     override val category: String,
-    val icon : ImageVector ?= null
+
 ) : RouteProvider {
     object Reservation : MainNavRoutes (
         route = "reservation_screen",

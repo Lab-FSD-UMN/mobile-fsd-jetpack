@@ -179,14 +179,16 @@ fun PageHeading(title: String, navController: NavController ?= null) {
 }
 
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen(color: Color = BiruUMN) {
     Box (
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Transparent),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = color
+        )
     }
 }
 

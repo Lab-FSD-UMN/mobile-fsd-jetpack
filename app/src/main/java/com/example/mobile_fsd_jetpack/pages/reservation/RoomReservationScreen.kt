@@ -80,8 +80,6 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
             override fun onFailure(call: Call<GetRoomsApiResponse>, t: Throwable) {
                 isLoading = false
                 Log.d("onFailure", t.message.toString())
-
-                isLoading = false
             }
         })
     }
@@ -136,15 +134,6 @@ fun RoomReservationScreen(navController: NavController?= null) { // nanti ?= nul
                         }
                     }
                 else -> NotGoingWellDisplay(type = NotGoingWellTypes.EmptyList)
-            }
-
-
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .wrapContentSize(Alignment.Center)
-                )
             }
         }
     }
