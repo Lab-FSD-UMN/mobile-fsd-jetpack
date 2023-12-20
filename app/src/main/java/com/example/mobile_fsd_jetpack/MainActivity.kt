@@ -47,10 +47,17 @@ import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
 import com.example.mobile_fsd_jetpack.R
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        FirebaseApp.initializeApp(this)
+
+        getFCMToken()
 
         setContent {
             val mainNavController = rememberNavController()
@@ -82,6 +89,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun getFCMToken() {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                val token = task.result
+            })
     }
 }
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "297535403032",
+    "project_id": "mobile-jetpack",
+    "storage_bucket": "mobile-jetpack.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297535403032:android:e56175d5c9227d07c7bf6d",
+        "android_client_info": {
+          "package_name": "com.example.mobile_fsd_jetpack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuaj1EKMhCuoHmfyzZiVdAclZx-gE4T-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
