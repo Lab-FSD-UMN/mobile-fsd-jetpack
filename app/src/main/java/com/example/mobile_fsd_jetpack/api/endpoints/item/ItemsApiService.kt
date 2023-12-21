@@ -28,7 +28,7 @@ interface ItemsApiService {
     @POST("user/reservation/item")
     fun reserveItem(
         @Header("Authorization") token: String,
-        @Body requestBody: ItemReservation
+        @Body requestBody: ItemReservation  
     ) : Call<ApiResponse>
 
     @GET("user/reservation/request")
