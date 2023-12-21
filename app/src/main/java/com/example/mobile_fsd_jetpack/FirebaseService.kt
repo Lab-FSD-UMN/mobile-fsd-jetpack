@@ -40,6 +40,7 @@ class FirebaseService : FirebaseMessagingService() {
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Reservation Notification")
             .setContentText(message)
+            .setSmallIcon(R.drawable.app_logo)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         val notificationManager =
