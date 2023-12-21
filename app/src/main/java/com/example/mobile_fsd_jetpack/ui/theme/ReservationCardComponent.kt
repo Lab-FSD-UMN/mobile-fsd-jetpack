@@ -306,3 +306,18 @@ fun ItemCard(
         }
     }
 }
+
+@Composable
+fun TextFieldTitle(title: String) {
+    Text(
+        style = TextStyle(
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        text = title,
+        color = Color.Black,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 2.dp)
+    )
+}

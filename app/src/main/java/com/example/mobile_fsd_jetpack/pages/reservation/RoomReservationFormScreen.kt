@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,7 +25,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -71,6 +69,7 @@ import com.example.mobile_fsd_jetpack.R
 import com.example.mobile_fsd_jetpack.navigation.MainNavRoutes
 import com.example.mobile_fsd_jetpack.ui.theme.BasicDialog
 import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
+import com.example.mobile_fsd_jetpack.ui.theme.TextFieldTitle
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -85,7 +84,6 @@ private fun formatDate(year: Int, month: Int, day: Int): String {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     return dateFormat.format(calendar.time)
 }
-
 private fun showTimePickerDialog(context: Context, onTimeSet: (hour: Int, minute: Int) -> Unit) {
     val calendar = Calendar.getInstance()
     // Get the current hour, minute, and second
@@ -106,7 +104,6 @@ private fun showTimePickerDialog(context: Context, onTimeSet: (hour: Int, minute
     timePickerDialog.show()
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 private fun showDatePickerDialog(context: Context, onDateSet: (selectedDate: String) -> Unit) {
     val calendar = Calendar.getInstance()
@@ -118,7 +115,10 @@ private fun showDatePickerDialog(context: Context, onDateSet: (selectedDate: Str
         context, { _, year, month, day ->
             val selectedDate = formatDate(year, month, day)
             onDateSet(selectedDate)
-        }, currentYear, currentMonth, currentDay
+        },
+        currentYear,
+        currentMonth,
+        currentDay
     ).show()
 }
 
@@ -154,9 +154,7 @@ fun RoomReservationFormScreen(
 
     LaunchedEffect(id) {
         if (id != null) {
-
             val call = getRoomsApiService.getRoomById(id)
-
             call.enqueue(object : Callback<GetRoomByIDApiResponse> {
                 override fun onResponse(
                     call: Call<GetRoomByIDApiResponse>, response: Response<GetRoomByIDApiResponse>
@@ -220,8 +218,6 @@ fun RoomReservationFormScreen(
                                     )
                                     .fillMaxSize()
                             ) {
-
-
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -247,7 +243,6 @@ fun RoomReservationFormScreen(
                                                     color = Color.Transparent
                                                 )
                                                 .clip(shape = RoundedCornerShape(8.dp)) // Apply the clip to round the corners
-
                                         )
                                     }
                                 }
@@ -295,18 +290,10 @@ fun RoomReservationFormScreen(
                                 var selectedEndDate by remember { mutableStateOf("dd / mm  / yyyy") }
                                 var startTime by remember { mutableStateOf("Select Start Time") }
                                 var endTime by remember { mutableStateOf("Select End Time") }
-                                var textInput by remember { mutableStateOf("Description") }
+                                var textInput by remember { mutableStateOf("") }
 
-                                Text(
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                                    ),
-                                    text = "Date Start",
-                                    color = Color.Black,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                )
+                                // START DATE
+                                TextFieldTitle("Date Start")
                                 OutlinedTextField(
                                     value = selectedStartDate,
                                     onValueChange = {
@@ -327,20 +314,10 @@ fun RoomReservationFormScreen(
                                     enabled = false,
                                     textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
                                 )
-
-
                                 Spacer(modifier = Modifier.height(16.dp))
 
-                                Text(
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                                    ),
-                                    text = "Date End",
-                                    color = Color.Black,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                )
+                                // END DATE
+                                TextFieldTitle("Date End")
                                 OutlinedTextField(
                                     value = selectedEndDate,
                                     onValueChange = {
@@ -362,20 +339,10 @@ fun RoomReservationFormScreen(
                                     textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
 
                                 )
-
                                 Spacer(modifier = Modifier.height(16.dp))
 
-
-                                Text(
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                                    ),
-                                    text = "Time Start",
-                                    color = Color.Black,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                )
+                                // TIME START
+                                TextFieldTitle("Time Start")
                                 OutlinedTextField(
                                     value = startTime,
                                     onValueChange = { startTime = it },
@@ -402,21 +369,10 @@ fun RoomReservationFormScreen(
                                     textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
                                     enabled = false
                                 )
-
                                 Spacer(modifier = Modifier.height(16.dp))
 
-
-                                Text(
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                                    ),
-
-                                    text = "Time End",
-                                    color = Color.Black,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                )
+                                // TIME END
+                                TextFieldTitle("Time End")
                                 OutlinedTextField(
                                     value = endTime,
                                     onValueChange = { endTime = it },
@@ -444,36 +400,18 @@ fun RoomReservationFormScreen(
                                     enabled = false
                                 )
 
+                                Spacer(modifier = Modifier.height(32.dp))
 
-                                Spacer(modifier = Modifier.height(16.dp))
-
-
-                                Spacer(modifier = Modifier.height(16.dp))
-
-
-                                Text(
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                                    ),
-
-                                    text = "Description (Purpose)",
-                                    color = Color.Black,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                )
-
+                                // Description
+                                TextFieldTitle("Description (Purpose)")
                                 OutlinedTextField(
                                     value = textInput,
                                     onValueChange = { textInput = it },
-                                    //                            label = { Text("Description (Purpose)") },
                                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
                                     modifier = Modifier.fillMaxWidth(),
                                     // change text color to black
                                     textStyle = TextStyle(color = Color.Gray.copy(alpha = 0.8f)), // Apply the desired text color here
                                 )
-
-
                                 Spacer(modifier = Modifier.height(16.dp))
 
                                 Button(
@@ -545,7 +483,6 @@ fun RoomReservationFormScreen(
                                     },
                                     modifier = Modifier
                                         .fillMaxWidth()
-
                                         .height(56.dp),
                                     colors = ButtonDefaults.buttonColors(
                                         BiruUMN
