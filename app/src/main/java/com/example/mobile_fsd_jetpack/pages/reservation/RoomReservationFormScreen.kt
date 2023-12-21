@@ -151,7 +151,7 @@ fun RoomReservationFormScreen(
     var isSubmitted by remember { mutableStateOf(false) }
 
     var isLoading by remember { mutableStateOf(true) }
-
+    var isError by remember { mutableStateOf(false) }
     LaunchedEffect(id) {
         if (id != null) {
 
@@ -175,8 +175,9 @@ fun RoomReservationFormScreen(
                 }
 
                 override fun onFailure(call: Call<GetRoomByIDApiResponse>, t: Throwable) {
+                    //log response message
+//                    Log.d("onFailure Message", response?.message.toString())
                     Log.d("onFailure", t.message.toString())
-
                     isLoading = false
                 }
             })
@@ -539,13 +540,12 @@ fun RoomReservationFormScreen(
                                                     status = 500,
                                                     message = "Failed to process your reservation."
                                                 )
-                                            }
+                                                isSubmitting = false
+                                            }    // hide the loading dialog
                                         })
-
                                     },
                                     modifier = Modifier
                                         .fillMaxWidth()
-
                                         .height(56.dp),
                                     colors = ButtonDefaults.buttonColors(
                                         BiruUMN
@@ -585,11 +585,25 @@ fun RoomReservationFormScreen(
                                             }
                                             isSubmitted = false
                                         },
-                                        onDismissClickOutside = false ,
+                                        onDismissClickOutside = false,
                                         title = if (modalData?.status == 500) "Fail" else "Success",
                                         buttonText = "OK",
                                         content = {
                                             Text(text = modalData?.message.toString())
+                                        }
+                                    )
+                                }
+
+                                if (isError) {
+                                    BasicDialog(
+                                        onDismiss = {
+                                            isError = false
+                                        },
+                                        onDismissClickOutside = false,
+                                        title = "Error",
+                                        buttonText = "OK",
+                                        content = {
+                                            Text(text = "Something went wrong")
                                         }
                                     )
                                 }
