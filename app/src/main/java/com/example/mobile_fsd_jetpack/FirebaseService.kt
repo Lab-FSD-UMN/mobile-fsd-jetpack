@@ -41,7 +41,7 @@ class FirebaseService : FirebaseMessagingService() {
             .setContentTitle("Reservation Notification")
             .setContentText(message)
             .setSmallIcon(R.drawable.app_logo)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
