@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,12 +23,18 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
@@ -91,6 +98,22 @@ fun LoginForm(navController : NavController, context : Context) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
+
+    // UriHandler parse and opens URI inside AnnotatedString Item in Browse
+    val uriHandler = LocalUriHandler.current
+
+    val text = buildAnnotatedString {
+        append("Don't have an account?")
+
+        pushStringAnnotation(tag = "register", annotation = "https://fsd.renara.biz.id/register")
+        withStyle(style = SpanStyle(
+            textDecoration = TextDecoration.Underline, 
+            color = Color(0xFF827D7D)
+        )) {
+            append(" Register now")
+        }
+        pop()
+    }
 
     val focusManager = LocalFocusManager.current
 //    val keyboardController = LocalSoftwareKeyboardController.current
@@ -294,6 +317,24 @@ fun LoginForm(navController : NavController, context : Context) {
                             .padding(horizontal = 24.dp),
                     )
                 }
+
+                ClickableText(
+                    text = text,
+                    style = TextStyle(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF827D7D),
+                        textAlign = TextAlign.Center,
+                        textDecoration = TextDecoration.Underline,
+                    ),
+                    onClick = { offset ->
+                        text.getStringAnnotations("register", offset, offset)
+                            .firstOrNull()?.let {
+                                Log.d("CONSOLE", it.item)
+                                uriHandler.openUri(it.item)
+                            }
+                    }
+                )
             }
 
             Image(
