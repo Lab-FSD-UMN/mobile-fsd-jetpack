@@ -19,7 +19,6 @@ class FirebaseService : FirebaseMessagingService() {
             Log.d(TAG, "Message data payload: ${remoteMessage.data}")
 
             // Handle the data payload here
-            // For example, you can extract reservation details
             val reservationId = remoteMessage.data["reservationId"]
             val message = "New Reservation ID: $reservationId"
 
