@@ -13,6 +13,9 @@
 `https://github.com/Lab-FSD-UMN/sistem-peminjaman`
 
 
+### Alternatif Link Drive berisi Source Code Aplikasi
+`https://drive.google.com/drive/folders/1tIqN4HkRQXjjKM6YVvl3YBYdhHhdPRDT?usp=sharing`
+
 ### Link Aplikasi Google Apps
 `-`
 
@@ -22,3 +25,4 @@
 
 ### Link Video Tutorial / Demo Aplikasi
 `https://www.youtube.com/watch?v=YD4MtUS8X80&t=1s`
+
