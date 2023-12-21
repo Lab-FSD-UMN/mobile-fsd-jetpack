@@ -1,5 +1,6 @@
 package com.example.mobile_fsd_jetpack
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,18 +48,31 @@ import com.example.mobile_fsd_jetpack.ui.theme.AlmostWhite
 import com.example.mobile_fsd_jetpack.ui.theme.BiruMuda_Lightest
 import com.example.mobile_fsd_jetpack.ui.theme.BiruUMN
 import com.example.mobile_fsd_jetpack.R
+import com.example.mobile_fsd_jetpack.api.BaseAPIBuilder
+import com.example.mobile_fsd_jetpack.api.endpoints.FCM
+import com.example.mobile_fsd_jetpack.api.endpoints.FCMTokenRequest
+import com.example.mobile_fsd_jetpack.api.response_model.ApiResponse
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.create
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(this)
-
-        getFCMToken()
-
+        //shared preferences
+        // if token exist in shared preferences, then do nothing
+        // else, get token from firebase and save it to shared preferences
+//        if (getSavedFCMToken(this) == null) {
+            getFCMToken(this)
+//        } else {
+//            Log.d("FCM_TOKEN", getSavedFCMToken(this)!!)
+//        }
         setContent {
             val mainNavController = rememberNavController()
             val context = LocalContext.current
@@ -91,15 +105,64 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun getFCMToken() {
-        FirebaseMessaging.getInstance().token
-            .addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    return@OnCompleteListener
-                }
+    //    private fun getFCMToken() {
+//        FirebaseMessaging.getInstance().token
+//            .addOnCompleteListener(OnCompleteListener { task ->
+//                Log.d("FCM_TOKEN", task.result.toString())
+//                if (!task.isSuccessful) {
+//                    return@OnCompleteListener
+//                }
+//                val token = task.result
+//            })
+//    }
+    private fun getFCMToken(context: Context) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
                 val token = task.result
-            })
+                saveFCMToken(context, token) // Save token locally
+
+                // Retrofit API call to save token to backend
+                val retrofit = BaseAPIBuilder().retrofit
+                val fcmService = retrofit.create(FCM::class.java)
+//                Log.d("FCM_API", "API route: ${fcmService.saveFCMToken(token).request().url}")
+
+                fcmService.saveFCMToken("Bearer ${UserAuth(context).getToken()}",
+                    FCMTokenRequest(token!!)
+                ).enqueue(object : Callback<ApiResponse> {
+                    //console log API route
+                    override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                        Log.d("FCM_API", "Response: ${response.body()}")
+                        if (response.isSuccessful) {
+                            Log.d("FCM_API", "Token saved to backend successfully.")
+                        } else {
+                            Log.e("FCM_API", "Failed to save token to backend.")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                        Log.e("FCM_API", "Error: ${t.message}")
+                    }
+                })
+            } else {
+                Log.w("FCM_TOKEN", "Fetching FCM registration token failed", task.exception)
+            }
+        }
     }
+
+
+
+    fun saveFCMToken(context: Context, token: String) {
+        val sharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putString("FCMToken", token).apply()
+        //save token to server
+    }
+
+    fun getSavedFCMToken(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("FCMToken", null)
+    }
+
+
 }
 
 @Composable
@@ -126,11 +189,11 @@ fun GreetingPreview() {
 fun BottomBar(
     navController: NavHostController, state: MutableState<Boolean>, modifier: Modifier = Modifier
 ) {
-    val screens = listOf (
+    val screens = listOf(
         MainNavRoutes.Reservation, MainNavRoutes.Monitoring, MainNavRoutes.Profile
     )
 
-    NavigationBar (
+    NavigationBar(
         modifier = modifier
             .shadow(
                 elevation = 30.dp,
@@ -153,7 +216,7 @@ fun BottomBar(
                     Text(
                         text = screen.title!!,
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
-                        )
+                    )
                 },
                 icon = {
                     Icon(
@@ -162,14 +225,14 @@ fun BottomBar(
                             .alpha(if (selected) 1f else 0.4f),
                         tint = BiruUMN,
                         imageVector =
-                            when (screen.title)
-                            {
-                                "Reserve" -> ImageVector.vectorResource(R.drawable.reservation_icon)
-                                "Monitoring" -> ImageVector.vectorResource(R.drawable.monitoring_icon)
-                                "Profile" -> ImageVector.vectorResource(R.drawable.profile_icon)
-                                else -> ImageVector.vectorResource(R.drawable.question_mark_icon)
-                            },
-                        contentDescription = "")
+                        when (screen.title) {
+                            "Reserve" -> ImageVector.vectorResource(R.drawable.reservation_icon)
+                            "Monitoring" -> ImageVector.vectorResource(R.drawable.monitoring_icon)
+                            "Profile" -> ImageVector.vectorResource(R.drawable.profile_icon)
+                            else -> ImageVector.vectorResource(R.drawable.question_mark_icon)
+                        },
+                        contentDescription = ""
+                    )
                 },
                 selected = selected,
                 onClick = {

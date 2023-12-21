@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">mobile-fsd-jetpack</string>
+    <string name="app_name">Lab FSD</string>
     <string name="item_description">%s</string>
     <string name="room_description">%s</string>
 </resources>

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:297535403032:android:e56175d5c9227d07c7bf6d",
         "android_client_info": {
-          "package_name": "com.example.mobile_fsd_jetpack"
+          "package_name": "com.labfsd.mobile_fsd_jetpack"
         }
       },
       "oauth_client": [],
